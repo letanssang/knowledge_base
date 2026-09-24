@@ -8,9 +8,9 @@ Mục tiêu của series là hiểu tại sao một cơ chế bảo mật tồn 
 
 | # | Article | Status |
 | --- | --- | --- |
-| 01 | [OWASP MASVS](./01-owasp-masvs/index.md) | Draft |
-| 02 | [OWASP MASWE](./02-owasp-maswe/index.md) | Draft |
-| 03 | [OWASP MASTG](./03-owasp-mastg/index.md) | Draft |
+| 01 | [OWASP MASVS](./01-owasp-masvs/index.md) | Published |
+| 02 | [OWASP MASWE](./02-owasp-maswe/index.md) | Published |
+| 03 | [OWASP MASTG](./03-owasp-mastg/index.md) | Published |
 | 04 | Secure Storage | Planned |
 | 05 | Mobile Cryptography | Planned |
 | 06 | Authentication | Planned |
