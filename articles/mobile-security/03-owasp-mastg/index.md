@@ -1030,3 +1030,4 @@ Các tài liệu chính thức từ **OWASP Mobile Application Security Project*
 ## Series
 
 - Previous: [OWASP MASWE Là Gì? Cầu Nối Giữa MASVS Và MASTG Trong Mobile Security](../02-owasp-maswe/index.md)
+- Next: [Secure Storage trong Mobile App: Token, Credentials và Dữ liệu Nhạy cảm Nên Lưu Ở Đâu?](../04-secure-storage/index.md)
