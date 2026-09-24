@@ -12,9 +12,9 @@ Mục tiêu của series là hiểu tại sao một cơ chế bảo mật tồn 
 | 02 | [OWASP MASWE](./02-owasp-maswe/index.md) | Published |
 | 03 | [OWASP MASTG](./03-owasp-mastg/index.md) | Published |
 | 04 | [Secure Storage](./04-secure-storage/index.md) | Draft |
-| 05 | Mobile Cryptography | Planned |
-| 06 | Authentication | Planned |
-| 07 | Network Security | Planned |
+| 05 | [Mobile Cryptography](./05-mobile-cryptography/index.md) | Draft |
+| 06 | [Authentication](./06-authentication/index.md) | Draft |
+| 07 | [Network Security](./07-network-security/index.md) | Draft |
 | 08 | Platform Security | Planned |
 | 09 | Secure Coding | Planned |
 | 10 | Reverse Engineering & Resilience | Planned |

@@ -121,6 +121,10 @@ Write articles in the portable subset of CommonMark and GitHub Flavored Markdown
 
 Avoid GitHub-only features unless there is no alternative. That includes alert blocks such as `> [!NOTE]`, Mermaid diagrams, and HTML embeds.
 
+## Drafting with NotebookLM
+
+Each series has its own NotebookLM notebook. The notebook id is `id` in `articles/<series>/notebook.toml`. Sign in once with `notebooklm login`, as described in the root `README.md`. Every coding agent follows the "Draft an article" section in `AGENTS.md`.
+
 ## Adding an article
 
 1. Choose the topic under `articles/`. If the topic does not exist, create `articles/<topic>/README.md` with one or two sentences on scope.

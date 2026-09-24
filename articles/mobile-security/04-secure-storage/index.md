@@ -222,3 +222,4 @@ Bài học thực tế để áp dụng vào dự án:
 ## Series
 
 - Previous: [OWASP MASTG Là Gì? Từ Security Requirement Đến Thực Tế Kiểm Thử Mobile](../03-owasp-mastg/index.md)
+- Next: [Mobile Cryptography: Hiểu Đúng Về Encryption, Cryptographic Keys và Key Management](../05-mobile-cryptography/index.md)

@@ -39,3 +39,14 @@ Architecture and design of software systems.
 No articles yet.
 
 [System Design](./articles/system-design/README.md)
+
+## NotebookLM
+
+Each series is drafted from its own NotebookLM notebook. Sign in once on this machine:
+
+```bash
+uv tool install "notebooklm-py[browser]"
+notebooklm login
+```
+
+The command opens a browser. After you sign in, the session is stored in `~/.notebooklm`, outside this repository. The notebook id for a series is the `id` field in `articles/<series>/notebook.toml`.

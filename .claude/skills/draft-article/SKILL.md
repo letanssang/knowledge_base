@@ -1,0 +1,1 @@
+../../../.grok/skills/draft-article/SKILL.md
