@@ -15,8 +15,8 @@ Mục tiêu của series là hiểu tại sao một cơ chế bảo mật tồn 
 | 05 | [Mobile Cryptography](./05-mobile-cryptography/index.md) | Draft |
 | 06 | [Authentication](./06-authentication/index.md) | Draft |
 | 07 | [Network Security](./07-network-security/index.md) | Draft |
-| 08 | Platform Security | Planned |
-| 09 | Secure Coding | Planned |
-| 10 | Reverse Engineering & Resilience | Planned |
-| 11 | Mobile Privacy | Planned |
-| 12 | Mobile Application Security Review — Putting Everything Together | Planned |
+| 08 | [Platform Security](./08-platform-security/index.md) | Draft |
+| 09 | [Secure Coding](./09-secure-coding/index.md) | Draft |
+| 10 | [Reverse Engineering & Resilience](./10-reverse-engineering/index.md) | Draft |
+| 11 | [Mobile Privacy](./11-mobile-privacy/index.md) | Draft |
+| 12 | [Mobile Application Security Review — Putting Everything Together](./12-mobile-security-review/index.md) | Draft |

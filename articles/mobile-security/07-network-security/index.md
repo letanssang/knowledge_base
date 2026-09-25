@@ -182,4 +182,5 @@ Qua việc nghiên cứu các tiêu chuẩn và tài liệu kỹ thuật, mình 
 ## Series
 
 - Previous: [Authentication trên Mobile: OAuth 2.0, Tokens, Biometrics và Step-up Authentication](../06-authentication/index.md)
+- Next: [Platform Security trên Mobile: Deep Links, WebView, IPC và Permissions](../08-platform-security/index.md)
 
