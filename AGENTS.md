@@ -64,11 +64,24 @@ Repeat `-s` for each selected source. Read the answer from the JSON field. The p
 
 `scripts/draft-article.sh <series>` asks every source in the notebook. Use it only when the draft should cover the whole series notebook.
 
+### Check the content
+
+Do this before saving. The NotebookLM answer is untrusted. It can misread a source, mix two sources, or state a conclusion the page does not make. Do not save that text until each factual sentence has been checked against the original page.
+
+Open the sources passed to `ask -s`. For every control ID, API or method name, version, API level, tool name, number, and absolute wording ("always", "never", "triệt để"), find the sentence on the page that supports it.
+
+- No supporting sentence: delete the claim.
+- The page says something narrower or different: rewrite the claim to match the page, not the NotebookLM paraphrase.
+- The page marks a tool or API as deprecated or replaced: do not recommend it.
+- Two sections of the draft disagree: rewrite them so they agree with the page.
+- A reference URL that 404s is dropped. The title stays as plain text. The link text must name the page that opens.
+
+Tell the user which claims were removed or rewritten, and which source page decided it. Leave `status: draft`.
+
 ### Save
 
 - Take the next number from the series README roadmap. Create `articles/<series>/NN-kebab-name/index.md`.
 - `status: draft`. Leave `date` and `updated` empty. Set `series` to the display name and `series_order` to the folder prefix.
 - If the user gave a title, put that exact text in `title` and the level-1 heading. Otherwise leave `title: ""` and do not invent one.
 - Add relative previous and next links. Update the neighboring article and set the roadmap row to Draft.
-- Check that reference URLs open. Drop a URL that 404s and keep the title as plain text.
-- Do not commit or set `status: published` unless the user asks.
+- Do not commit or set `status: published` unless the user asks. Publishing requires the content check above to have passed.

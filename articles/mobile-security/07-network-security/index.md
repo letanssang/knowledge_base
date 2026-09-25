@@ -117,14 +117,14 @@ Trên Android, pinning có thể được khai báo trực tiếp trong Network 
 </network-security-config>
 ```
 
-Một quy tắc quan trọng khi triển khai certificate pinning là luôn luôn phải bao gồm ít nhất một **backup pin**. Nếu không có backup key, khi máy chủ thay đổi chứng chỉ hoặc xoay CA, ứng dụng sẽ mất hoàn toàn khả năng kết nối cho đến khi nhà phát triển đẩy một bản cập nhật ứng dụng mới lên store.
+Một quy tắc quan trọng khi triển khai certificate pinning là luôn luôn phải bao gồm ít nhất một **backup pin**. Nếu không có backup key, khi máy chủ thay đổi chứng chỉ hoặc xoay CA, ứng dụng sẽ mất hoàn toàn khả năng kết nối cho đến khi nhà phát triển đẩy một bản cập nhật ứng dụng mới lên store. Tài liệu Android cũng cảnh báo đây là lý do pinning không nên bật cho mọi app: đổi CA mà client chưa có pin mới thì app mất kết nối.
 
 Bảng so sánh giữa kiểm soát TLS mặc định và Certificate Pinning:
 
 | Tiêu chí | TLS mặc định (MASVS-NETWORK-1) | Identity Pinning (MASVS-NETWORK-2) |
 | :--- | :--- | :--- |
 | **Trust Anchor** | Tự động tin tưởng mọi Root CA có sẵn trong hệ thống | Chỉ tin tưởng các public key / CA được khai báo cụ thể |
-| **Mức độ chống MITM** | Có nguy cơ nếu một CA bị thỏa hiệp hoặc bị chèn CA người dùng | Ngăn chặn triệt để MITM kể cả khi kẻ tấn công sở hữu CA hợp lệ |
+| **Mức độ chống MITM** | Có nguy cơ nếu một CA bị thỏa hiệp hoặc bị chèn CA người dùng | Từ chối chứng chỉ không nằm trong pin set, kể cả chứng chỉ của một CA mà hệ điều hành tin. Không chặn được app đã bị sửa hoặc thiết bị đã root |
 | **Phương thức cấu hình** | Dựa trên cấu hình mặc định của hệ điều hành (`system` CAs) | Khai báo `<pin-set>` XML hoặc dùng thư viện như OkHttp `CertificatePinner` |
 | **Chi phí quản lý** | Không cần quản lý khóa trên ứng dụng client | Bắt buộc quản lý Backup Pin và có kế hoạch xoay khóa |
 
@@ -141,7 +141,7 @@ Khi đánh giá hoặc triển khai an toàn mạng, các nhà phát triển và
 1. **Lỡ bật Cleartext Traffic không kiểm soát**: Việc thiết lập `cleartextTrafficPermitted="true"` trên toàn bộ ứng dụng (`base-config`) hoặc bật `NSAllowsArbitraryLoads` trên iOS làm lộ dữ liệu nhạy cảm dưới dạng unencrypted HTTP.
 2. **Tự viết code kiểm tra SSL/TLS sai quy cách**: Việc tự viết logic xác thực SSL/TLS thay vì dùng framework tiêu chuẩn dễ dẫn đến lỗi bảo mật nghiêm trọng. Ví dụ như việc viết custom `TrustManager` không kiểm tra chuỗi chứng chỉ hoặc `HostnameVerifier` chấp nhận mọi hostname.
 3. **Thiếu Backup Pin khi Pinning**: Triển khai pinning nhưng quên cấu hình backup pin làm ứng dụng bị brick kết nối khi phía máy chủ xoay chứng chỉ.
-4. **Vấn đề Bypass Network Security Config khi Pentest**: Do Android 7.0+ chặn `user` CA mặc định, để intercept được lưu lượng mạng khi kiểm thử, mình cần giải nén APK bằng `apktool`, chỉnh sửa cấu hình mạng thêm `<certificates src="user" />`, rebuild và sign lại APK bằng công cụ như `Android-CertKiller`, hoặc copy chứng chỉ proxy vào thư mục `/system/etc/security/cacerts/` trên thiết bị đã root.
+4. **Vấn đề Bypass Network Security Config khi Pentest**: Do Android 7.0+ chặn `user` CA mặc định, để intercept được lưu lượng mạng khi kiểm thử, mình giải nén APK bằng `apktool`, thêm `<certificates src="user" />` vào Network Security Configuration, rồi build và ký lại. Trên thiết bị đã root, có thể cài chứng chỉ proxy vào `/system/etc/security/cacerts/`.
 
 ---
 

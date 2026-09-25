@@ -123,7 +123,14 @@ Avoid GitHub-only features unless there is no alternative. That includes alert b
 
 ## Drafting with NotebookLM
 
-Each series has its own NotebookLM notebook. The notebook id is `id` in `articles/<series>/notebook.toml`. Sign in once with `notebooklm login`, as described in the root `README.md`. Every coding agent follows the "Draft an article" section in `AGENTS.md`.
+Each series has its own NotebookLM notebook. The notebook id is `id` in `articles/<series>/notebook.toml`. Sign in once with `notebooklm login`, as described in the root `README.md`. Commands for every coding agent are in the "Draft an article" section of `AGENTS.md`.
+
+The text NotebookLM returns is not a source. Before it is saved:
+
+1. Search and import the official pages for the topic.
+2. Generate the draft from those pages only.
+3. Open each page and check every factual sentence against it. A control ID, API name, version, tool name, number, or absolute claim ("always", "never", "triệt để") needs a sentence on the page. Delete a claim the page does not support. Rewrite a claim the page states more narrowly. Do not recommend a tool or API the page marks as deprecated.
+4. Save the result as `status: draft`.
 
 ## Adding an article
 
@@ -134,7 +141,8 @@ Each series has its own NotebookLM notebook. The notebook id is `id` in `article
 5. Set `series` and `series_order` only for a series article, and make `series_order` match the folder prefix.
 6. Replace the `example` tag. Use at most four lowercase tags.
 7. Write the body. Delete optional sections you do not need. Add references only when the sources are real.
-8. Put images in `assets/` beside `index.md`, with kebab-case names and alt text. Use `/assets/shared/` only for a file that more than one article includes.
-9. For a series article, add previous and next links by hand. Point them at each `index.md`.
-10. Update the series or topic README so its status matches the front matter.
-11. Do not add a site generator, workflow, package manifest, or publishing script for this step.
+8. If NotebookLM wrote the body, do not trust that text. Check it against the source pages, using the rule in "Drafting with NotebookLM", before the file is saved.
+9. Put images in `assets/` beside `index.md`, with kebab-case names and alt text. Use `/assets/shared/` only for a file that more than one article includes.
+10. For a series article, add previous and next links by hand. Point them at each `index.md`.
+11. Update the series or topic README so its status matches the front matter.
+12. Do not add a site generator, workflow, package manifest, or publishing script for this step.
