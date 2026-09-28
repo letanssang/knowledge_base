@@ -1,68 +1,68 @@
 # Engineering Knowledge Base
 
-Knowledge I have learned, researched, implemented, or found worth documenting.
+Kiến thức mình đã học, đã nghiên cứu, đã làm, hoặc thấy đáng ghi lại.
 
 ## Mobile Security
 
-Security standards and practice for Android and iOS applications.
+Tiêu chuẩn và thực hành bảo mật cho ứng dụng Android và iOS.
 
 [Mobile Security](./articles/mobile-security/README.md)
 
 ## Apache Camel
 
-Enterprise Integration Patterns (EIP) and system integration with Apache Camel.
+Enterprise Integration Patterns (EIP) và tích hợp hệ thống với Apache Camel.
 
 [Apache Camel](./articles/apache-camel/README.md)
 
 ## Flutter
 
-Flutter application development.
+Phát triển ứng dụng Flutter.
 
-No articles yet.
+Chưa có bài.
 
 [Flutter](./articles/flutter/README.md)
 
 ## Java Core
 
-Core Java programming language fundamentals, OOP, collections, generics, exceptions, and functional programming.
+Nền tảng ngôn ngữ Java: cú pháp, OOP, collections, generics, exception, và functional programming.
 
 [Java Core](./articles/java-core/README.md)
 
 ## Spring Boot
 
-Building enterprise backend applications with the Spring Boot framework.
+Xây dựng ứng dụng backend với Spring Boot.
 
 [Spring Boot](./articles/spring-boot/README.md)
 
 ## Backend
 
-Server-side fundamentals: networking protocols, databases, transactions, and event-driven architectures.
+Nền tảng phía server: giao thức mạng, cơ sở dữ liệu, transaction, và kiến trúc hướng sự kiện.
 
 [Backend](./articles/backend/README.md)
 
 ## DevOps
 
-Delivery, infrastructure, and operations.
+Delivery, hạ tầng, và vận hành.
 
-No articles yet.
+Chưa có bài.
 
 [DevOps](./articles/devops/README.md)
 
 ## System Design
 
-Architecture and design of software systems.
+Kiến trúc và thiết kế hệ thống phần mềm.
 
-No articles yet.
+Chưa có bài.
 
 [System Design](./articles/system-design/README.md)
 
 ## NotebookLM
 
-Each series is drafted from its own NotebookLM notebook. Sign in once on this machine:
+Mỗi series được soạn từ một notebook NotebookLM riêng. Đăng nhập một lần trên máy này:
 
 ```bash
 uv tool install "notebooklm-py[browser]"
 notebooklm login
 ```
 
-The command opens a browser. After you sign in, the session is stored in `~/.notebooklm`, outside this repository. The notebook id for a series is the `id` field in `articles/<series>/notebook.toml`.
+Lệnh mở trình duyệt. Sau khi đăng nhập, session nằm ở `~/.notebooklm`, ngoài repository này. Notebook id của một series là trường `id` trong `articles/<series>/notebook.toml`.

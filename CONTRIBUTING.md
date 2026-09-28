@@ -20,7 +20,7 @@ Write it after using the idea, or after studying it carefully enough to explain 
 
 ## Language
 
-`README.md` and `CONTRIBUTING.md` at the repository root are English.
+`README.md` at the repository root is Vietnamese, like the articles. `CONTRIBUTING.md` stays English.
 
 Series descriptions and article bodies are Vietnamese when `language` is `vi`. `language` defaults to `vi`.
 
