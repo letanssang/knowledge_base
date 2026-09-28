@@ -1,6 +1,6 @@
 ---
 title: "Java Collections Framework: Phân tích kiến trúc List, Set, Map và Queue"
-description: "Một interface cho mỗi việc: List có thứ tự, Set không trùng, Map ánh xạ key, Queue giữ phần tử chờ xử lý. ArrayList, LinkedList và HashMap không synchronized."
+description: "Chọn collection bắt đầu từ cách chương trình cần dùng dữ liệu. Bài viết đi từ List, Set, Map đến ArrayList, LinkedList và HashMap bằng một ví dụ quản lý công việc."
 
 date:
 updated:
@@ -11,8 +11,8 @@ series_order: 4
 tags:
   - java
   - collections
-  - hashmap
   - data-structures
+  - hashmap
 
 status: draft
 language: vi
@@ -20,91 +20,42 @@ language: vi
 
 # Java Collections Framework: Phân tích kiến trúc List, Set, Map và Queue
 
-> **Tóm tắt:** Mình chọn interface theo việc cần làm, rồi mới chọn class. `Map` không phải `Collection`. `ArrayList` lấy phần tử theo chỉ số trong thời gian hằng. `LinkedList` đi từ đầu hoặc cuối khi cần một chỉ số. `HashMap` không giữ thứ tự chèn và cho phép một key `null`.
+Một bảng việc cần làm thường phải giải quyết hai nhu cầu khác nhau: hiển thị các việc theo thứ tự, và tìm nhanh một việc khi biết mã của nó. Nếu cố dùng một cấu trúc dữ liệu cho cả hai nhu cầu, code sẽ khó đọc hoặc phải tự viết thêm logic tra cứu.
 
-*Thời gian đọc: ~10 phút*
+Java Collections Framework cung cấp các interface để mô tả cách mình muốn làm việc với dữ liệu, cùng những class cụ thể để lưu trữ và truy cập dữ liệu đó. Bắt đầu từ nhu cầu giúp chọn đúng cấu trúc dễ hơn là học thuộc danh sách class.
 
----
+## Chọn cách biểu diễn trước khi chọn class
 
-## 1. Vì sao không tự viết danh sách
+Nếu cần một dãy phần tử có thứ tự và có thể lặp lại phần tử, `List` phù hợp. Nếu cần một tập hợp không chứa phần tử trùng, dùng `Set`. Còn khi cần tra một giá trị bằng khóa — ví dụ mã công việc để tìm nội dung — `Map` lưu cặp key/value.
 
-Một tay bài, một hộp thư, một danh bạ tên sang số: đều là nhiều phần tử gom vào một object. Collection là object đó. Mình dùng nó để cất, lấy, sửa và đưa cả nhóm đi.
+`Queue` dành cho các phần tử đang chờ được xử lý. Nhiều queue hoạt động theo kiểu vào trước, xử lý trước, nhưng interface không bắt buộc mọi implementation phải dùng đúng một thứ tự. Vì vậy, hãy dựa vào hợp đồng cụ thể của queue mình chọn.
 
-Nếu mỗi thư viện tự nghĩ một danh sách riêng, chỗ này trả tên node, chỗ kia đòi tiêu đề cột, mình phải viết lớp chuyển ở giữa. Collections Framework cho một bộ từ vựng chung. Nó có ba phần:
+Khác biệt giữa interface và implementation cũng đáng giữ trong code. Khai báo biến bằng `List<String>` nói rằng nơi này cần làm việc với một danh sách chuỗi; `ArrayList` là một lựa chọn lưu trữ cụ thể. Nếu sau này cách lưu thay đổi, phần code dựa vào các thao tác của `List` có thể ít phải sửa hơn.
 
-- Interface mô tả việc, không mô tả cách cất trong RAM. Nhờ vậy mình đổi class bên dưới mà code gọi interface không đổi.
-- Implementation là cấu trúc dữ liệu làm việc đó.
-- Algorithm là method như tìm và sắp xếp, viết một lần rồi chạy trên nhiều implementation của cùng interface.
+## ArrayList và LinkedList: khác biệt nằm ở cách truy cập
 
-API mới nhận hoặc trả một collection thì dùng interface này, không bịa một bộ method riêng. Cấu trúc mới mà theo interface thì chỗ khác dùng lại được.
+`ArrayList` dùng mảng có thể tăng kích thước. Đọc hoặc thay phần tử theo chỉ số nhanh; thêm phần tử ở cuối thường nhanh, dù đôi khi phải tăng kích thước mảng. Tính qua nhiều lần thêm, thao tác thêm cuối có chi phí trung bình thấp. Vì thế đây thường là lựa chọn dễ bắt đầu khi cần một `List` thông thường.
 
----
+`LinkedList` lưu các node nối với nhau theo hai chiều. Nếu đã đứng ở đúng vị trí, thao tác với node kề bên thuận tiện; nhưng tìm phần tử theo chỉ số phải đi dọc danh sách. Điều đó có nghĩa là đổi `ArrayList` sang `LinkedList` không tự làm thao tác chèn ở một chỉ số bất kỳ nhanh hơn — chương trình vẫn cần tìm tới vị trí ấy trước.
 
-## 2. Hai cây, và Map đứng riêng
+Hãy chọn theo thao tác chương trình thực sự làm nhiều nhất. Nếu thường xuyên đọc bằng chỉ số hoặc duyệt danh sách, `ArrayList` thường là điểm bắt đầu hợp lý. Chỉ chọn `LinkedList` khi các thao tác ở đầu/cuối hoặc qua iterator phù hợp với cách chương trình truy cập dữ liệu.
 
-Có hai cây. `Set` là một `Collection`. `SortedSet` là một `Set`. `Map` không phải `Collection`. `SortedMap` là bản đã sắp của `Map`.
+## HashMap dành cho bài toán tra cứu bằng khóa
 
-Mọi interface này đều generic. `Collection<E>` nghĩa là mình nói rõ phần tử là kiểu gì. Compiler kiểm lúc biên dịch, nên ít khi đến lúc chạy mới phát hiện mình vừa nhét nhầm kiểu.
+Để tìm công việc theo mã, `HashMap<Integer, String>` ánh xạ key sang value. `put` thêm hoặc thay một mapping; `get` tìm value theo key. Với cách phân tán hash phù hợp, các thao tác này thường có thời gian kỳ vọng ổn định, nhưng `HashMap` không hứa thứ tự khi duyệt các phần tử.
 
-Thao tác sửa được đánh dấu optional để không phải có một interface cho danh sách không sửa được, một interface cho danh sách cố định kích thước, một interface cho danh sách chỉ được thêm cuối. Implementation không hỗ trợ thao tác đó thì ném `UnsupportedOperationException`. Các implementation thông dụng của JDK hỗ trợ hết các thao tác optional.
+Điểm cuối này quan trọng khi hiển thị dữ liệu: nếu thứ tự là một phần của yêu cầu, đừng dựa vào thứ tự tình cờ của `HashMap`. Hãy chọn cấu trúc có hợp đồng thứ tự phù hợp hoặc giữ danh sách riêng cho phần cần hiển thị.
 
-| Interface | Mình dùng khi |
-| --- | --- |
-| `Collection` | Chỉ cần "một nhóm phần tử". JDK không có class implement thẳng interface này. |
-| `Set` | Không được trùng. Như tập hợp trong toán. |
-| `List` | Có thứ tự, được trùng, lấy được theo chỉ số. |
-| `Queue` | Giữ phần tử trước khi xử lý. Thường vào trước ra trước, nhưng không phải queue nào cũng vậy. Priority queue xếp theo comparator hoặc theo thứ tự tự nhiên của phần tử. Phần tử đầu là phần tử `remove` hoặc `poll` sẽ lấy. Mỗi class phải nói rõ nó xếp thế nào. |
-| `Deque` | Lấy và thêm được cả hai đầu, nên dùng như hàng đợi hoặc như stack. |
-| `SortedSet`, `SortedMap` | Giữ phần tử hoặc key theo thứ tự tăng. |
-
----
-
-## 3. ArrayList và LinkedList không đổi cho nhau được
-
-`ArrayList` là `List` cất trong một mảng co giãn. Nó nhận `null`. Nó gần `Vector`, nhưng không khóa khi nhiều thread cùng đụng.
-
-`get`, `set`, `size`, `isEmpty`, `getFirst`, `getLast`, `removeLast`, `iterator`, `listIterator` và `reversed` chạy trong thời gian hằng. `add` và `addLast` thêm một phần tử cũng vậy nếu tính trung bình. Thêm n phần tử thì hết O(n). Các việc còn lại đi hết danh sách, nhưng hệ số nhỏ hơn `LinkedList`.
-
-Capacity là độ dài mảng bên trong, luôn ít nhất bằng số phần tử. Thêm phần tử thì mảng tự dài ra. JDK không mô tả mảng nhân lên bao nhiêu, chỉ đảm bảo thêm một phần tử có chi phí trung bình là hằng. `new ArrayList()` bắt đầu với capacity 10. Sắp thêm rất nhiều phần tử thì `ensureCapacity` xin một lần, đỡ cấp phát nhiều lần. `trimToSize` cắt mảng xuống đúng số phần tử. `clone` chỉ chép danh sách, không chép từng object bên trong.
-
-`get` ném `IndexOutOfBoundsException` khi chỉ số âm hoặc không nhỏ hơn size. `getFirst` và `getLast` có từ Java SE 21. Danh sách rỗng thì chúng ném `NoSuchElementException`.
-
-`LinkedList` là danh sách liên kết đôi, vừa là `List` vừa là `Deque`, và cũng nhận `null`. Lấy theo chỉ số thì nó đi từ đầu hoặc từ cuối, chọn đầu nào gần hơn. Đó là lý do chỉ số ở giữa danh sách dài thì `ArrayList` rẻ hơn.
-
-Cả hai class không synchronized. Nhiều thread cùng dùng, và có thread thêm hoặc xóa phần tử, thì mình phải khóa từ bên ngoài. Chỉ gán đè một ô đã có thì `ArrayList` không tính là sửa cấu trúc. `LinkedList` cũng vậy: thêm hoặc xóa mới là sửa cấu trúc, gán giá trị một ô thì không. Không có object nào tự nhiên bao danh sách thì bọc bằng `Collections.synchronizedList`.
-
-`LinkedList` còn là hàng đợi. `peek` và `poll` trả `null` khi rỗng. `element` và `remove()` ném `NoSuchElementException` khi rỗng. `addLast` chính là `add`.
-
----
-
-## 4. HashMap là bảng băm, không phải danh sách đã xếp
-
-`HashMap` làm mọi thao tác của `Map`, nhận `null` cho value và nhận một key `null`. Nó gần `Hashtable`, nhưng không khóa và cho phép null. Không có thứ tự. Thứ tự mình thấy lúc in cũng không được hứa là sẽ giữ nguyên.
-
-`get` và `put` chạy trong thời gian hằng nếu `hashCode` rải key đều vào các bucket. Duyệt `keySet` thì tốn tỷ lệ với số bucket cộng với số cặp key-value. Capacity khởi tạo quá lớn, hoặc load factor quá nhỏ, làm vòng lặp này chậm.
-
-Capacity là số bucket. Load factor là ngưỡng đầy trước khi bảng tự lớn. Số cặp vượt quá load factor nhân capacity thì bảng được dựng lại, số bucket khoảng gấp đôi. Load factor mặc định `0.75` cân thời gian và bộ nhớ. Tăng nó thì đỡ tốn bộ nhớ nhưng `get` và `put` đắt hơn. `new HashMap()` bắt đầu với 16 bucket và load factor `0.75`. Capacity âm, hoặc load factor không dương, thì constructor ném `IllegalArgumentException`. Nếu capacity ban đầu lớn hơn số cặp tối đa chia cho load factor, bảng không phải dựng lại lần nào.
-
-Nhiều key cùng `hashCode` làm mọi bảng băm chậm. Key nào là `Comparable` thì `HashMap` có thể dùng thứ tự so sánh để gỡ các key đụng nhau.
-
-`get` trả value, hoặc `null` khi không có key. Key `null` so bằng `==`. Key khác so bằng `equals`. `null` trả về chưa chắc là key không có, vì value cũng được phép là `null`. `containsKey` phân biệt hai trường hợp.
-
-Class này không synchronized. Thêm hoặc xóa cặp là sửa cấu trúc và phải khóa ngoài nếu nhiều thread cùng làm. Đổi value của key đã có thì không phải sửa cấu trúc. Không có object bao map thì dùng `Collections.synchronizedMap`.
-
-`keySet` là cửa sổ nhìn vào map. Sửa map thì set đổi, sửa set thì map đổi. Sửa map trong lúc đang duyệt set, trừ `remove` của chính iterator, thì kết quả duyệt không xác định. Set này không có `add`.
-
----
+`HashMap` cũng không tự đồng bộ khi nhiều thread cùng thay đổi nó. Nếu nhiều luồng có thể ghi đồng thời, cần chọn cách đồng bộ phù hợp thay vì nghĩ rằng mọi collection đều thread-safe sẵn. Nhưng trong ứng dụng một luồng, không cần thêm đồng bộ chỉ vì đang dùng collection.
 
 ## Kết luận
 
-Mình chọn interface trước. Cần chỉ số và thứ tự thì `List`. Cần không trùng thì `Set`. Cần key thì `Map`, và không chờ `HashMap` giữ thứ tự mình đã `put`. Cần hàng đợi thì đọc class đó xếp đầu hàng thế nào, vì FIFO không phải luật của mọi `Queue`.
-
-Trong `List`, `get` và `set` theo chỉ số thì `ArrayList`. Thêm và lấy ở hai đầu thì `LinkedList`. Cả `ArrayList`, `LinkedList` và `HashMap` đều không tự khóa. Thêm hoặc xóa từ nhiều thread thì khóa ngoài, hoặc bọc bằng method `synchronized` của `Collections`.
+Hãy bắt đầu bằng câu hỏi dữ liệu cần được dùng thế nào: theo thứ tự, không trùng, theo key hay theo hàng chờ. Sau đó chọn implementation dựa trên thao tác chính — truy cập theo chỉ số, duyệt, thêm/xóa hay tra cứu — và yêu cầu về thứ tự hoặc đồng bộ. Interface giúp phần code thể hiện nhu cầu; implementation đáp ứng nhu cầu ấy bằng một cách lưu cụ thể.
 
 ## References
 
-- [Lesson: Introduction to Collections](https://docs.oracle.com/javase/tutorial/collections/intro/index.html)
-- [Lesson: Interfaces](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
+- [Introduction to Collections](https://docs.oracle.com/javase/tutorial/collections/intro/index.html)
+- [Collection Interfaces](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 - [ArrayList (Java SE 25)](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html)
 - [LinkedList (Java SE 25)](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html)
 - [HashMap (Java SE 25)](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html)

@@ -1,6 +1,6 @@
 ---
 title: "Lập trình hướng đối tượng (OOP) trong Java: 4 Trụ cột và Ứng dụng thực tế"
-description: "Object giữ state và behavior. Class là bản vẽ. Java chỉ kế thừa một superclass, còn instance method override chạy theo object thật."
+description: "OOP giúp mô hình hóa state và hành vi trong object. Qua ví dụ xe đạp, bài viết nối class, object, đóng gói, trừu tượng, kế thừa và đa hình thành một cách thiết kế dễ hình dung."
 
 date:
 updated:
@@ -20,130 +20,69 @@ language: vi
 
 # Lập trình hướng đối tượng (OOP) trong Java: 4 Trụ cột và Ứng dụng thực tế
 
-> **Tóm tắt:** Mình nhét state vào field và behavior vào method, rồi chỉ cho bên ngoài gọi method. Class là bản vẽ để tạo nhiều object. Một class chỉ có một superclass trực tiếp. Instance method bị override chạy theo object đang nằm trong biến, không theo kiểu khai báo của biến.
+Giả sử một ứng dụng ban đầu chỉ quản lý xe đạp thường. Mỗi chiếc có số đang cài, tốc độ và vài thao tác như tăng tốc hay đổi số. Khi ứng dụng cần thêm xe đạp địa hình, mình có thể sao chép class cũ rồi sửa vài chỗ. Cách đó chạy được lúc đầu, nhưng mỗi lần sửa quy tắc chung lại phải nhớ cập nhật nhiều bản sao.
 
-*Thời gian đọc: ~10 phút*
+OOP đưa ra một cách tổ chức khác: gom state và những thao tác liên quan vào object, rồi mô tả các loại object bằng class. Từ ví dụ chiếc xe, ta có thể thấy bốn ý thường được nhắc tới trong OOP — encapsulation, abstraction, inheritance và polymorphism — giải quyết những vấn đề khác nhau.
 
----
+## Class là mô tả, object là chiếc xe cụ thể
 
-## 1. Che state, để method quyết định
+Một class định nghĩa loại dữ liệu và hành vi mà object của nó có. `Bicycle` có thể mô tả những field như `gear` và `speed`, cùng những method như `changeGear` hay `speedUp`. Khi tạo hai object từ class ấy, mỗi object có state riêng: chiếc thứ nhất có thể ở số 2, chiếc thứ hai ở số 5.
 
-Một chiếc xe có số đang cài, tốc độ, và việc mình được phép đổi số. Trong code, state nằm ở field, behavior nằm ở method. Method sửa state bên trong và là cách object nói chuyện với object khác. Data encapsulation là việc giấu state và bắt mọi tương tác đi qua method.
+Phân biệt class với object quan trọng vì code thường làm việc với từng object cụ thể, còn class cho biết những object cùng loại có gì và làm được gì. Nếu `gear` thay đổi trên chiếc thứ nhất, object thứ hai không tự đổi theo. Chúng cùng được tạo từ một mô tả, nhưng không phải cùng một object.
 
-Nếu xe chỉ có 6 số, method đổi số từ chối giá trị nhỏ hơn 1 hoặc lớn hơn 6. Object giữ quyền quyết định bên ngoài được dùng nó thế nào. Field `public` thì bất kỳ chỗ nào cũng gán `gear = 9` được, và chỗ kiểm tra 6 số không còn cơ hội chạy.
+## Đóng gói và trừu tượng giúp code bên ngoài bớt phụ thuộc
 
-Bó code vào từng object cho mình bốn việc. Source của object này sửa được mà không đụng object kia, và object tạo xong thì đưa đi trong hệ thống. Bên ngoài chỉ gọi method nên không phụ thuộc cách mình cất field. Object người khác đã viết, đã test, mình dùng lại được. Object nào hỏng thì gỡ ra và cắm object khác vào chỗ đó, như thay một con bu-lông chứ không thay cả cái máy.
+Nếu mọi đoạn code đều được phép sửa `gear` trực tiếp, một nơi có thể đặt số hợp lệ, nơi khác lại vô tình đặt số không hợp lệ. Encapsulation gom dữ liệu với các thao tác quản lý dữ liệu đó, để object kiểm soát cách state của nó thay đổi. Thay vì cho code bên ngoài sửa field tùy ý, class có thể đưa ra method `changeGear` và tự quyết định có chấp nhận giá trị mới hay không.
 
-Interface là hợp đồng với bên ngoài. Class implement interface thì hứa cung cấp behavior mà interface đã công bố. Phần "abstraction" mình dùng ở đây là hợp đồng đó: bên gọi biết được gọi method nào, không cần biết class nào đang làm.
+Abstraction giải quyết một câu hỏi gần đó nhưng khác: người dùng object cần biết điều gì để làm việc với nó? Nơi gọi chỉ cần biết có thể gọi `changeGear`; nó không cần biết class lưu state ra sao hay kiểm tra giá trị bằng những bước nào. Phần giao tiếp công khai là API của object. Khi implementation thay đổi mà API vẫn làm đúng điều đã hứa, code gọi không phải thay đổi theo.
 
----
+Hai ý này thường đi cùng nhau: encapsulation giữ quyền kiểm soát bên trong object, còn abstraction giúp phần bên ngoài chỉ nhìn thấy những thao tác cần thiết. Chúng đặc biệt hữu ích khi một class bắt đầu được dùng ở nhiều nơi và ta muốn thay cách thực hiện mà không phải sửa mọi caller.
 
-## 2. Class là bản vẽ, object là từng chiếc xe
+## Kế thừa chỉ có ý nghĩa khi quan hệ cha-con đúng
 
-Nhiều xe cùng loại dựng từ một bộ bản vẽ. Class là bản vẽ đó. Chiếc xe trong chương trình là một instance.
-
-`Bicycle` giữ `cadence`, `speed`, `gear` và các method đổi chúng. Class này không có `main`. Nó chưa phải một ứng dụng. Class khác tạo xe và gọi method. Hai lần `new Bicycle()` là hai object. Đổi cadence của xe thứ hai không đổi xe thứ nhất:
-
-```text
-cadence:50 speed:10 gear:2
-cadence:40 speed:20 gear:3
-```
-
-Field không `static` là của từng instance. Field `static` có một bản cho cả class, dù mình tạo bao nhiêu instance.
-
----
-
-## 3. Một superclass, và không phải thứ gì cũng được kế thừa
-
-`MountainBike` cần cadence, speed và gear của `Bicycle`, rồi thêm chiều cao yên. Mình cho nó `extends Bicycle` thay vì chép lại các field và method. Class được dẫn ra là subclass. Class gốc là superclass.
-
-Trừ `Object`, class không có superclass, mọi class có đúng một superclass trực tiếp. Không khai báo superclass thì class là subclass ngầm của `Object`. Một class có thể được dẫn từ class được dẫn từ class khác, và cuối chuỗi là `Object`. Class càng gần đáy thì behavior càng hẹp. `MountainBike` là một `Bicycle` và cũng là một `Object`, nên dùng được ở chỗ đang cần hai kiểu đó. Chiều ngược lại không chắc: một `Bicycle` có thể là `MountainBike`, nhưng không phải lúc nào cũng vậy.
-
-Subclass nhận field, method và nested class của superclass. Constructor không phải member, nên không đi theo kế thừa. Subclass vẫn gọi được constructor của superclass bằng `super(...)`.
-
-Quyền truy cập hẹp hơn câu "nhận mọi thứ":
-
-- Member `public` và `protected` được nhận dù khác package.
-- Cùng package thì nhận thêm member không ghi modifier.
-- Member `private` không được nhận. Subclass vẫn gọi được method `public` hoặc `protected` của superclass nếu method đó đọc field `private`.
-- Nested class thấy mọi member `private` của class bao nó. Nested class `public` hoặc `protected` mà subclass nhận được sẽ thấy gián tiếp các member `private` của superclass.
-
-Field trùng tên ở subclass che field của superclass. Cách này không nên dùng. Constructor của subclass gọi constructor superclass ngầm, hoặc gọi tường minh bằng `super` trước khi gán phần của riêng nó. `MountainBike` gọi `super(startCadence, startSpeed, startGear)` rồi mới gán `seatHeight`.
-
----
-
-## 4. Override chạy theo object, static thì chạy theo chỗ gọi
-
-Instance method ở subclass, cùng tên, cùng số lượng và kiểu tham số, cùng kiểu trả về hoặc một kiểu con của kiểu trả về, thì override method của superclass. Kiểu trả về là kiểu con được gọi là covariant return type.
-
-`@Override` báo compiler rằng mình định override. Method không có ở superclass nào thì compiler báo lỗi. Annotation này không bắt buộc, nhưng nó bắt giúp chỗ mình tưởng đang override mà thực ra là method mới.
-
-Static method cùng chữ ký ở subclass thì che static method của superclass, không override.
+Xe đạp địa hình vẫn là một loại xe đạp. Vì vậy `MountainBike` có thể kế thừa `Bicycle`, dùng lại phần chung rồi bổ sung state riêng như chiều cao yên. Đây là inheritance: class con nhận thành viên từ superclass và có thể mở rộng hoặc điều chỉnh hành vi.
 
 ```java
-public class Animal {
-    public static void testClassMethod() {
-        System.out.println("The static method in Animal");
-    }
-    public void testInstanceMethod() {
-        System.out.println("The instance method in Animal");
+class Bicycle {
+    String description() {
+        return "A bicycle";
     }
 }
 
-public class Cat extends Animal {
-    public static void testClassMethod() {
-        System.out.println("The static method in Cat");
-    }
-    public void testInstanceMethod() {
-        System.out.println("The instance method in Cat");
-    }
-
-    public static void main(String[] args) {
-        Cat myCat = new Cat();
-        Animal myAnimal = myCat;
-        Animal.testClassMethod();
-        myAnimal.testInstanceMethod();
+class MountainBike extends Bicycle {
+    @Override
+    String description() {
+        return "A mountain bike";
     }
 }
 ```
 
-`Animal.testClassMethod()` in dòng của `Animal` vì lời gọi static đi theo tên class. `myAnimal.testInstanceMethod()` in dòng của `Cat` vì object thật là `Cat`. Đổi instance method ở superclass thành static ở subclass, hoặc ngược lại, không biên dịch.
+Kế thừa giúp chia sẻ code, nhưng không nên dùng chỉ vì hai class có vài dòng giống nhau. Nếu `MountainBike` không thực sự là một loại `Bicycle`, quan hệ cha-con sẽ khiến mô hình khó hiểu và class con phải mang theo hành vi không phù hợp. Trong Java, mỗi class chỉ có một superclass trực tiếp; interface là một cách khác để mô tả khả năng mà nhiều loại class có thể cùng cung cấp.
 
-Method override được mở quyền hơn, không được thu hẹp. `protected` ở superclass có thể thành `public` ở subclass, không thành `private`.
+## Đa hình cho phép gọi cùng một thao tác trên nhiều loại object
 
-Overload một method đã kế thừa thì method mới thuộc riêng subclass. Nó không che và không override method cũ.
-
-Default method và abstract method của interface được kế thừa như instance method. Khi nhiều interface có default method trùng chữ ký, class thắng interface: `Pegasus` vừa kế thừa `Horse` vừa implement `Flyer` và `Mythical` thì `identifyMyself()` trả về `"I am a horse."`. Method đã bị ứng viên khác override thì bị bỏ qua: `Dragon` implement `EggLayer` và `FireBreather` dùng bản của `EggLayer`, `"I am able to lay eggs."`. Hai default method định nghĩa độc lập mà trùng chữ ký, hoặc một default method đụng một abstract method, thì compiler báo lỗi cho đến khi class tự viết method đó. Bản default gọi được bằng `FlyCar.super.startEngine(key)`. Tên đứng trước `super` phải là interface cha trực tiếp. Static method trong interface không bao giờ được kế thừa.
-
----
-
-## 5. Cùng một biến Bicycle, ba kiểu xe in ba câu
-
-`Bicycle`, `MountainBike` và `RoadBike` đều có `printDescription`. Hai class con override method đó. Ba biến đều khai báo kiểu `Bicycle`, nhưng lần lượt giữ `new Bicycle(...)`, `new MountainBike(...)` và `new RoadBike(...)`. JVM gọi method của object trong biến, không gọi method của kiểu khai báo. Đó là virtual method invocation. Xe núi in thêm loại suspension. Xe đường in thêm bề rộng lốp.
-
-`Object obj = new MountainBike()` là cast ngầm. `obj` vừa là `Object` vừa là `MountainBike`, cho đến khi bị gán object khác. `MountainBike myBike = obj` không biên dịch, vì compiler không biết `obj` là `MountainBike`. `(MountainBike) obj` là lời hứa của mình. Compiler chèn một lần kiểm lúc chạy. Nếu lúc đó object không phải `MountainBike`, một exception bị ném. `instanceof` kiểm trước khi cast, nên mình cast mà biết lần kiểm đó sẽ qua:
+Giờ một method khác nhận `Bicycle` và gọi `describe()`. Nó có thể nhận cả `MountainBike`, vì đây là class con của `Bicycle`. Khi instance method được override, Java chọn implementation theo loại object thật đang được tham chiếu:
 
 ```java
-if (obj instanceof MountainBike) {
-    MountainBike myBike = (MountainBike) obj;
+class Example {
+    void run() {
+        Bicycle bike = new MountainBike();
+        String text = bike.description(); // text nhận "A mountain bike"
+    }
 }
 ```
 
----
+Đây là polymorphism: code gọi làm việc qua một kiểu chung, còn từng loại object cung cấp cách phản hồi phù hợp. Khi thêm loại xe mới, mình có thể bổ sung implementation mà không nhất thiết viết một nhánh `if` cho mọi loại trong code đang gọi.
 
 ## Kết luận
 
-State mà bên ngoài không được phá thì để field không `public` và sửa qua method. Method đó là chỗ từ chối số 7 trên chiếc xe chỉ có 6 số.
-
-Một class chỉ có một superclass trực tiếp. Constructor và member `private` không đi theo kế thừa. Cần nhiều hợp đồng cùng lúc thì implement nhiều interface. Bài sau tách interface và abstract class.
-
-Khi biến có kiểu superclass mà object là subclass, instance method override chạy theo object. Static method cùng chữ ký thì chạy theo class viết ở chỗ gọi. Cast xuống subclass chỉ an toàn sau khi `instanceof` đã đúng, hoặc khi mình chắc chỗ tạo ra object.
+Khi thiết kế bằng OOP, bắt đầu từ state và hành vi thuộc về object nào. Đóng gói state sau API rõ ràng, dùng inheritance khi class con thực sự là một dạng của class cha, và dùng polymorphism khi nhiều loại object cần đáp ứng cùng một thao tác theo cách riêng. Bốn ý này giúp code dễ mở rộng khi dùng đúng quan hệ; chúng không phải danh sách kỹ thuật cần thêm vào mọi class.
 
 ## References
 
-- [Lesson: Object-Oriented Programming Concepts](https://docs.oracle.com/javase/tutorial/java/concepts/index.html)
-- [What Is an Object?](https://docs.oracle.com/javase/tutorial/java/concepts/object.html)
+- [Object-Oriented Programming Concepts](https://docs.oracle.com/javase/tutorial/java/concepts/index.html)
 - [What Is a Class?](https://docs.oracle.com/javase/tutorial/java/concepts/class.html)
+- [What Is an Object?](https://docs.oracle.com/javase/tutorial/java/concepts/object.html)
 - [Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
 - [Overriding and Hiding Methods](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)
 - [Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)

@@ -1,50 +1,33 @@
-Bạn là người viết bài cho một engineering knowledge base cá nhân. Nguồn đã có sẵn trong notebook này. Chỉ dùng các nguồn đó. Không hỏi thêm nguồn, không tìm nguồn bên ngoài, và không bịa tài liệu, URL, phiên bản, ID, số liệu, hay trích dẫn.
-
-Viết một bài Markdown duy nhất. Trả về đúng bài viết, không có lời dẫn hay giải thích bên ngoài.
+Viết bài hướng dẫn Java bằng tiếng Việt cho người biết lập trình cơ bản nhưng chưa hiểu chủ đề. Văn phong như bài giải thích trên Medium/Viblo: dẫn dắt, mạch lạc, có ví dụ và giải thích đến nơi đến chốn; không như ghi chú ôn thi, bản dịch hay danh sách định nghĩa. Chỉ dùng thông tin được nguồn notebook hỗ trợ. Không bịa fact, số liệu, trải nghiệm thật, URL hay trích dẫn.
 
 ## Cách viết
 
-Learn → Understand → Apply → Write.
+Mở bằng tình huống nhỏ khi viết/đọc Java, nói rõ nếu đó là ví dụ giả định. Nêu vấn đề trung tâm rồi từng bước giải thích cơ chế; nối các phần với nhau thay vì chuyển chủ đề đột ngột.
 
-Người đọc là chính mình vài tháng sau, khi không mở lại tài liệu. Bài phải làm mình hiểu lại cơ chế chỉ bằng bài này.
+Nếu hợp lý, dùng một ví dụ xuyên suốt. Dẫn code theo trình tự: làm gì, Java xử lý ra sao, ý nghĩa và điều cần chú ý. Không dùng code trang trí hay dựa vào API chưa giới thiệu. Giải thích vì sao bên cạnh là gì, rồi liên hệ cách áp dụng hoặc lỗi cần tránh.
 
-Viết bằng tiếng Việt, ngôi thứ nhất ("mình"). "Mình" là người đang dùng khái niệm. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh đã thông dụng. Không dịch một thuật ngữ chỉ để có bản tiếng Việt. Ví dụ giữ nguyên: authentication, authorization, attack surface, runtime, dependency, reverse engineering, secure storage, threat model.
+Viết đoạn văn tự nhiên, thường 3–5 câu. Dùng câu nối; tránh câu cụt, lối nói tắt, facts rời rạc. Ngôi “mình” dùng vừa phải. Giữ thuật ngữ quen thuộc như `Thread`, `Stack`, `Heap`, `field`, `method`, `interface`, `compiler`, `runtime`; giải nghĩa bằng vai trò cụ thể, không dịch gượng hay tạo ẩn dụ khó hiểu.
 
-Bài không phải biên bản đọc tài liệu và không phải bản chép lại từng mục. Với mỗi ý chính, đi theo thứ tự này khi nguồn đủ dữ liệu:
+Chọn một câu hỏi trung tâm và 2–4 phần; khoảng 600–900 từ nếu chủ đề đủ ý, ngắn hơn nếu đã giải thích xong. Đừng nhồi chi tiết/ngoại lệ/API, lặp kết luận hay kéo dài cho đủ số từ. Không ép mục theo khuôn. Hạn chế bullet/bảng; ưu tiên văn xuôi.
 
-1. Một tình huống ngắn, để thấy vì sao thứ này tồn tại.
-2. Cơ chế, kèm một ví dụ đủ nhỏ để hình dung.
-3. Quy tắc nói thẳng.
-4. Một chỗ dễ sai, mô tả như việc gặp khi viết code.
+## Độ tin cậy
 
-Không mở bài bằng việc đọc tài liệu. Không dẫn ý bằng "trang nói", "đặc tả liệt kê", "tutorial đưa ví dụ", "mình từng nhớ nhầm", "banner của trang", hay việc câu này lấy từ nguồn nào. Không ghi chú câu nào đã bị sửa. Tên tài liệu và URL chỉ xuất hiện ở References. Người lưu bài sẽ đối chiếu từng câu với trang nguồn sau khi bài này được trả về. Việc đó không viết vào bài.
-
-Bài phải trả lời, theo các mục phù hợp với nguồn, không phải bằng bảy heading cố định:
-
-- Đây là gì?
-- Vì sao nó tồn tại?
-- Nó giải quyết vấn đề gì?
-- Nó hoạt động như thế nào?
-- Điều gì có thể sai?
-- Áp dụng trong thực tế ra sao?
-
-Chỉ viết những gì nguồn đã cho phép khẳng định. Nếu nguồn không đủ để kết luận, nói giới hạn của cơ chế. Không suy diễn, và không kể quá trình chọn nguồn.
+Chỉ khẳng định điều nguồn hỗ trợ, đúng phạm vi; bỏ chi tiết thiếu căn cứ. Cẩn thận với “luôn”, “không bao giờ”, “triệt để”; không đề xuất API deprecated. Không mở bài bằng việc đọc tài liệu, không nhắc “trang nói” hay việc kiểm chứng. Tên nguồn và URL chỉ trong References.
 
 ## Định dạng
 
-Chỉ dùng CommonMark và GitHub Flavored Markdown: heading, list, bảng, fenced code block có language tag, ảnh, link. Sơ đồ ASCII đặt trong khối `text`. Không dùng alert kiểu `> [!NOTE]`, Mermaid, hay HTML.
-
-Để trống title. Không viết heading cấp 1.
-
-Front matter bắt đầu bằng `---` và kết thúc bằng `---`. Giữ nguyên các dòng trống và các khóa dưới đây. `description` là một hoặc hai câu tiếng Việt, không Markdown, tóm tắt bài. `tags` viết thường, kebab-case nếu có nhiều từ, tối đa 4 tag. Không điền `date`, `updated`, `series`, `series_order`, `slug`, `canonical_url`. Không thêm trường khác.
+Trả đúng một bài Markdown. Nếu title được cung cấp, đặt nguyên văn ở front matter và heading cấp 1; nếu chưa có title, để trống và không tự đặt. Heading cấp 2 không đánh số. Không dùng Mermaid, HTML, alert block hoặc ảnh ngoài nguồn.
 
 ```yaml
 ---
 title: ""
-description: ""
+description: "Một hoặc hai câu tóm tắt vấn đề và điều người đọc sẽ hiểu."
 
 date:
 updated:
+
+series: ""
+series_order: 1
 
 tags:
   - example
@@ -54,13 +37,6 @@ language: vi
 ---
 ```
 
-Sau front matter, thân bài theo đúng thứ tự này:
+Sau front matter: lời dẫn tình huống; phần giải thích; kết luận ngắn về áp dụng; `## References` link đúng URL notebook; `## Series` để trống cho người biên tập thêm Previous/Next. Không thêm lời ngoài bài.
 
-1. Một blockquote tóm tắt, mở đầu bằng `**Tóm tắt:**`.
-2. Một dòng `*Thời gian đọc: ~N phút*`. Ước lượng từ độ dài bài.
-3. Một dòng `---`.
-4. Các mục chính đánh số, heading cấp 2: `## 1. ...`, `## 2. ...`. Mục con là heading cấp 3. Đặt `---` giữa các mục chính.
-5. `## Kết luận`, nói lần sau gặp tình huống này thì làm gì. Không lặp lại toàn bộ bài và không kể mình đã đọc được gì.
-6. `## References`. Mỗi nguồn là một mục danh sách, link Markdown tới đúng URL có trong nguồn. Nếu nguồn không có URL, ghi tên tài liệu và không bịa link. Không thêm mục Series.
-
-Không chèn ảnh. Không viết link tới bài khác trong repo.
+Trước khi trả lời, đọc liền mạch: ngữ cảnh, thuật ngữ và code đã được dẫn dắt chưa; các đoạn nối tự nhiên không? Sửa chỗ nào còn giống ghi chú rời/bản dịch sát chữ.

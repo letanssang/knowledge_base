@@ -1,8 +1,8 @@
 # Java Core
 
-Series tìm hiểu toàn diện về nền tảng ngôn ngữ Java (Java Core) dành cho lập trình viên backend: từ cú pháp, mô hình hướng đối tượng (OOP), interface/abstract class, Collections Framework, Generics, xử lý ngoại lệ đến Functional Programming với Lambda Expressions và Stream API.
+Series này giúp người đã biết lập trình hiểu cách Java xử lý kiểu dữ liệu, object, interface, collections, generics, exception, lambda và stream.
 
-Mục tiêu của series là nắm vững bản chất cốt lõi của Java, hiểu cách JVM quản lý bộ nhớ và vận hành mã nguồn, nhận diện các cạm bẫy thực tế và xây dựng nền tảng vững chắc để phát triển các ứng dụng doanh nghiệp quy mô lớn.
+Mỗi bài bắt đầu từ một tình huống quen thuộc khi đọc hoặc viết code, rồi lần theo cơ chế qua ví dụ trước khi rút ra cách áp dụng. Mục tiêu là hiểu được vì sao code chạy như vậy, không phải học thuộc danh sách thuật ngữ.
 
 ## Roadmap
 

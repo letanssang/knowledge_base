@@ -1,6 +1,6 @@
 ---
 title: "Phân biệt Interface và Abstract Class: Bản chất, Khác biệt và Cách thiết kế"
-description: "Interface là hợp đồng không giữ state của từng object. Abstract class chia sẻ field và method đã viết. Default method thêm hành vi mà class cũ không phải sửa."
+description: "Interface mô tả điều một class có thể làm; abstract class phù hợp khi các class liên quan cần chia sẻ state hoặc implementation. Bài viết dùng một ví dụ để chọn đúng giữa hai cách."
 
 date:
 updated:
@@ -20,85 +20,57 @@ language: vi
 
 # Phân biệt Interface và Abstract Class: Bản chất, Khác biệt và Cách thiết kế
 
-> **Tóm tắt:** Interface công bố method để các class không cùng họ cùng làm theo, và field của nó là hằng. Abstract class dùng khi vài class gần nhau cần chung field của từng object và chung đoạn code đã viết. Default method thêm method vào interface mà class đã implement không phải viết lại.
+Một ứng dụng gửi thông báo có thể gửi email, tin nhắn hoặc thông báo trong app. Phần code quyết định “gửi” thường không cần biết từng loại thông báo kết nối ra sao; nó chỉ cần gọi một thao tác chung. Nhưng nếu các loại gửi đều cần dùng chung cấu hình hoặc một phần cách xử lý, chỉ một interface có thể chưa đủ.
 
-*Thời gian đọc: ~9 phút*
+Đây là lúc câu hỏi “dùng interface hay abstract class?” trở nên thực tế. Cách chọn dễ nhớ nhất không phải dựa vào tên gọi, mà là xem mình muốn thống nhất khả năng hay muốn chia sẻ cả state và implementation.
 
----
+## Interface mô tả hợp đồng mà class có thể cung cấp
 
-## 1. Hai nhóm không cần đọc code của nhau
+Ta có thể khai báo một interface `Notifier` với method `send`. `EmailNotifier` và `AppNotifier` cùng implement interface đó, mỗi class tự quyết định cách gửi. Nơi gọi chỉ cần nhận một `Notifier` rồi gọi `send`; nó không cần rẽ nhánh theo từng implementation.
 
-Hãng xe và hãng dẫn đường không cần đọc source của nhau. Họ cần một hợp đồng: method nào làm xe rẽ, method nào đổi làn, tham số và giá trị trả về là gì. Hãng xe công bố interface. Hãng dẫn đường chỉ gọi các method đó. Chevrolet và Toyota cùng implement `OperateCar`, phần bên trong khác nhau. Bên dẫn đường không đổi.
-
-Interface là một reference type. Nó chứa hằng, chữ ký method, default method, static method, và kiểu lồng nhau. Thân method chỉ có ở default method và static method. Không viết `new` một interface. Class implement nó, hoặc interface khác extend nó.
-
-Một class chỉ extend được một class. Một interface extend được nhiều interface, danh sách cách nhau bởi dấu phẩy. Class tạo được instance mà implement interface thì phải có thân cho mỗi method được khai báo. Abstract method trong interface kết thúc bằng dấu chấm phẩy, không có ngoặc nhọn. Mọi abstract method, default method, static method, và mọi hằng trong interface đều ngầm `public`. Hằng còn ngầm `static` và `final`. Modifier đó viết hay không cũng vậy.
-
-Bên bán một thư viện xử lý ảnh làm đúng việc này. Họ công bố chữ ký. Phần hiện thực giữ kín và được sửa sau, miễn là vẫn implement đúng interface khách đang gọi.
-
----
-
-## 2. Abstract class giữ phần đã viết và state của từng object
-
-`GraphicObject` có tọa độ và method `moveTo` đã viết sẵn, mọi hình dùng chung. `draw` và `resize` thì mỗi hình làm một kiểu, nên chúng không có thân:
+Điểm mạnh của interface là nó mô tả một khả năng, không đòi hỏi những class thực hiện khả năng ấy phải cùng một nhánh kế thừa. Một class có thể implement nhiều interface, nên nó có thể thể hiện nhiều vai trò độc lập. Chẳng hạn, một object vừa có thể gửi thông báo, vừa có thể ghi log, miễn là nó cung cấp các method tương ứng.
 
 ```java
-abstract void draw();
-abstract void resize();
+interface Notifier {
+    String send(String message);
+}
+
+class EmailNotifier implements Notifier {
+    public String send(String message) {
+        return "Email: " + message;
+    }
+}
+
+class App {
+    String createMessage() {
+        Notifier notifier = new EmailNotifier();
+        return notifier.send("Your order is ready");
+    }
+}
 ```
 
-Class chứa method không có thân thì bản thân class phải là `abstract`. Không `new GraphicObject()` được. `Circle` và `Rectangle` không abstract nên phải viết cả `draw` và `resize`. Subclass không viết đủ method trừu tượng thì subclass cũng phải là `abstract`.
+Caller dùng biến `notifier` qua kiểu interface và không cần biết class cụ thể để gọi `send`. Interface cũng có thể có `default method`: một method đã có phần implementation chung. Điều này hữu ích khi muốn bổ sung hành vi dùng chung cho các class đang implement interface. Class có thể dùng phần mặc định hoặc override lại nếu cần cách làm riêng.
 
-Abstract class vẫn có field và method `static`, gọi qua tên class như class thường: `AbstractClass.staticMethod()`.
+## Abstract class chia sẻ phần nền giữa các class liên quan
 
-Một class implement interface mà chưa viết hết method thì vẫn hợp lệ nếu class đó là `abstract`. `abstract class X implements Y` viết tất cả trừ một method. `class XX extends X` viết nốt method còn lại. `X` phải abstract vì chưa hiện thực đủ `Y`. `XX` thì có hiện thực `Y`.
+Giờ giả sử các loại thông báo đều thuộc cùng một hệ thống và cùng cần lưu tên người gửi, kiểm tra message rỗng, rồi ghi lại trạng thái đã gửi. Nếu mỗi class phải viết lại phần đó, một abstract class có thể giữ state và implementation chung; các class con chỉ bổ sung phần đặc thù.
 
-Method trong interface không ghi `default` hoặc `static` thì ngầm abstract. Không cần viết thêm modifier `abstract`.
+Abstract class không thể được tạo object trực tiếp. Nó có thể chứa fields, method đã triển khai và method abstract mà class con cần hoàn thiện. Khác với interface, một class chỉ có thể kế thừa một class cha trực tiếp, nên lựa chọn abstract class gắn các class con vào cùng một nhánh kế thừa.
 
----
+## Một câu hỏi giúp chọn nhanh
 
-## 3. Chọn theo state và theo số lượng kiểu
+Hãy tự hỏi: “Mình đang mô tả một khả năng mà nhiều loại object có thể cung cấp, hay một họ class cần chia sẻ state và code?” Nếu là khả năng, bắt đầu bằng interface. Nếu các class có quan hệ rõ ràng và thật sự cần dùng chung phần dữ liệu hoặc implementation, cân nhắc abstract class.
 
-Hai thứ giống nhau ở chỗ không tạo được instance, và đều có thể trộn method đã có thân với method chưa có thân.
-
-| | Abstract class | Interface |
-| --- | --- | --- |
-| Field của từng object | Được. Field không cần `static` hay `final` | Không. Mọi field là `public static final` |
-| Method đã có thân | `public`, `protected`, `private` | Method mình khai báo hoặc viết dưới dạng default đều là `public` |
-| Số lượng | Extend đúng một class | Implement bao nhiêu interface cũng được |
-
-Mình dùng abstract class khi vài class gắn với nhau cần chung code, khi chúng cần nhiều field hoặc method chung, khi cần `protected` hoặc `private`, hoặc khi method phải đọc và sửa state của chính object.
-
-Mình dùng interface khi các class không cùng họ vẫn phải làm cùng một việc. `Comparable` và `Cloneable` là hai trường hợp đó. Interface cũng là chỗ mình nêu behavior của một kiểu mà không quan tâm class nào làm, và là chỗ một class nhận nhiều kiểu cùng lúc.
-
-`AbstractMap` là abstract class. `HashMap`, `TreeMap` và `ConcurrentHashMap` dùng chung các method nó đã viết, trong đó có `get`, `put`, `isEmpty`, `containsKey` và `containsValue`. `HashMap` đồng thời implement `Serializable`, `Cloneable` và `Map<K, V>`. Nhìn danh sách đó mình biết một instance clone được, chuyển được thành byte stream, và dùng được như một map. Cùng một class vừa extend abstract class vừa implement nhiều interface. Nhiều thư viện làm vậy.
-
----
-
-## 4. Thêm method vào interface mà class cũ không phải sửa
-
-`TimeClient` đã có `setTime`, `setDate`, `setDateAndTime` và `getLocalDateTime`. `SimpleTimeClient` đã implement xong. Nay mình muốn thêm `getZonedDateTime`.
-
-Thêm nó như abstract method thì mọi class đã implement phải viết method mới, nếu không không biên dịch. Thêm như static method thì người gọi coi đó là hàm tiện ích, không phải việc của từng object. Default method có thân sẵn. `SimpleTimeClient` không sửa vẫn có `getZonedDateTime`. Đó là cách thêm chức năng vào interface của thư viện mà code biên dịch với interface cũ vẫn tương thích ở mức binary.
-
-Default method mở đầu bằng `default`. Static method `getZoneId` gọi `ZoneId.of(zoneString)`. Nếu ném `DateTimeException`, nó in ra stderr và trả `ZoneId.systemDefault()`. Default method dựng `ZonedDateTime` từ giờ local và zone đó. Static method gắn với interface, mọi instance dùng chung, và cũng ngầm `public`. Helper của interface để ngay trong interface, không cần một class riêng.
-
-Interface con đối xử với default method của interface cha theo ba cách. Không nhắc tới thì được kế thừa nguyên. Khai báo lại, không có thân, thì method thành abstract và class implement phải tự viết. Định nghĩa lại thì bản mới override bản cũ.
-
-Default method còn để nhét lambda vào thư viện đã có. `Comparator` là functional interface. `sort` nhận lambda. `comparing`, `comparingDouble` và `comparingLong` là static method. `thenComparing`, `thenComparingDouble`, `thenComparingLong` và `reversed` là default method. `Comparator.comparing(Card::getRank).thenComparing(Comparator.comparing(Card::getSuit))` xếp bài theo chất rồi theo rank mà không cần một class `Comparator` mới cho mỗi cách xếp. `.reversed()` đảo chiều comparator đang có.
-
----
+Hai cách này cũng có thể đi cùng nhau: abstract class có thể implement một interface. Khi ấy interface là hợp đồng cho bên gọi, còn abstract class là một cách triển khai chung cho một số class. Tránh tạo abstract class chỉ để gom vài method tiện ích; một quan hệ kế thừa không phù hợp thường khiến class con khó thay thế hoặc mở rộng hơn.
 
 ## Kết luận
 
-Cần một hợp đồng cho nhiều class không cùng cha, mình viết interface. Cần vài class gần nhau dùng chung field của từng object và đoạn code đã viết, mình viết abstract class. `HashMap` làm cả hai: extend `AbstractMap`, implement `Map` và các interface khác.
-
-Thêm method vào interface đã có người implement thì mình cho nó thân mặc định, nếu không mọi class cũ vỡ lúc biên dịch. Field trong interface là hằng dùng chung, không phải state của từng object. State đó nằm ở class.
+Chọn interface để diễn đạt điều caller có thể yêu cầu, nhất là khi nhiều class không liên quan cần cùng đáp ứng một contract. Chọn abstract class khi các class liên quan cần dùng chung state hay implementation. Nếu chưa cần chia sẻ code, interface thường giữ cho quan hệ giữa các class linh hoạt hơn.
 
 ## References
 
-- [Interfaces](https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html)
 - [Defining an Interface](https://docs.oracle.com/javase/tutorial/java/IandI/interfaceDef.html)
+- [Interfaces](https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html)
 - [Abstract Methods and Classes](https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html)
 - [Default Methods](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
 

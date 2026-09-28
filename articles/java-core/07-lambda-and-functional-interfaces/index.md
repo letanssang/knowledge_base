@@ -1,6 +1,6 @@
 ---
 title: "Lambda Expressions và Functional Interfaces trong Java 8+"
-description: "Lambda là thân của một method duy nhất, truyền vào chỗ đang cần hành vi. Kiểu của lambda là kiểu chỗ nó được gắn vào. Biến bên ngoài mà lambda đọc thì không được gán lại."
+description: "Lambda cho phép truyền hành vi vào method gọn hơn anonymous class. Functional interface cung cấp kiểu đích để compiler hiểu lambda phải làm gì."
 
 date:
 updated:
@@ -20,96 +20,43 @@ language: vi
 
 # Lambda Expressions và Functional Interfaces trong Java 8+
 
-> **Tóm tắt:** Khi mình chỉ cần đưa một việc vào một method, anonymous class của interface một method dài hơn việc đó. Lambda viết mỗi phần việc. Compiler lấy kiểu của lambda từ chỗ nó đang đứng. Package `java.util.function` có sẵn các hình hay gặp, từ Java SE 8.
+Một method nhận danh sách điểm số có thể cần lọc theo những ngưỡng khác nhau. Nếu mỗi ngưỡng cần một method gần như giống hệt nhau, phần khác biệt thật sự — điều kiện lọc — bị chôn trong rất nhiều code lặp.
 
-*Thời gian đọc: ~9 phút*
+Lambda expression giúp truyền chính phần hành vi thay đổi ấy vào method. Để hiểu vì sao compiler biết lambda phải nhận tham số nào và trả về kiểu gì, cần nhìn thêm khái niệm functional interface.
 
----
+## Lambda là phần hành vi mình muốn truyền vào
 
-## 1. Một method dài vì mỗi điều kiện là một API
-
-`printPersonsOlderThan` chỉ in người lớn hơn một tuổi. Đổi class `Person`, method này phải viết lại. Muốn in người trẻ hơn thì lại một method mới. `printPersonsWithinAgeRange` cũng vậy: mỗi câu hỏi mới là một method mới, và method đó vỡ khi `Person` đổi field.
-
-Việc lọc tách ra một interface:
+Ta có thể định nghĩa một kiểu kiểm tra nhỏ:
 
 ```java
-interface CheckPerson {
-    boolean test(Person p);
+import java.util.function.Predicate;
+
+class FilterExample {
+    void run() {
+        Predicate<Integer> isPositive = number -> number > 0;
+    }
 }
 ```
 
-`printPersons` nhận danh sách và một `CheckPerson`. Anonymous class implement `test` vẫn dài, vì cả khối class chỉ để chứa một method. Lambda là phần method đó:
+Lambda `number -> number > 0` mô tả điều kiện kiểm tra một số nguyên. Thay vì viết một class đầy đủ chỉ để cung cấp method `test`, lambda cho biết tham số và nội dung cần thực hiện. Khi yêu cầu lọc thay đổi, mình có thể truyền một lambda khác mà không viết lại phần duyệt danh sách.
 
-```java
-printPersons(
-    roster,
-    (Person p) -> p.getGender() == Person.Sex.MALE
-        && p.getAge() >= 18
-        && p.getAge() <= 25
-);
-```
+`Predicate<Integer>` là functional interface có method `test` trả về `boolean`. Functional interface có một abstract method để lambda cung cấp implementation; nó vẫn có thể có `default` hoặc `static` methods. “Functional” không có nghĩa interface chỉ được phép chứa đúng một method dưới mọi hình thức. Annotation `@FunctionalInterface` giúp compiler kiểm tra ý định này.
 
-`CheckPerson` là functional interface vì nó chỉ có một abstract method. Interface vẫn được có default method và static method. Vì chỉ một abstract method, mình không cần nhắc tên method khi viết lambda.
+## Vì sao compiler biết kiểu của lambda?
 
----
+Lambda không tự mang một kiểu độc lập trong khai báo như `Integer` hay `Predicate<Integer>`. Compiler hiểu nó theo functional interface mà ngữ cảnh yêu cầu. Ở ví dụ trên, kiểu đích là `Predicate<Integer>`, nên `number` được hiểu là `Integer`, và biểu thức phải tạo ra kết quả `boolean` như method `test` yêu cầu.
 
-## 2. Bốn hình mình hết phải tự khai báo
+Java có sẵn một số functional interfaces thường dùng trong `java.util.function`. `Predicate<T>` biểu diễn điều kiện trả về `boolean`; `Function<T, R>` nhận một giá trị và trả về giá trị khác; `Consumer<T>` nhận một giá trị để thực hiện hành động; `Supplier<T>` cung cấp một giá trị mà không nhận tham số. Dùng đúng kiểu giúp chữ ký method nói rõ đoạn hành vi được truyền vào sẽ làm gì.
 
-`java.util.function` có từ Java SE 8. Mỗi interface trong đó có một abstract method, gọi là functional method. Lambda và method reference được khớp vào method đó. `@FunctionalInterface` không bắt buộc để compiler nhận ra interface. Nó ghi ý đồ, và compiler báo khi mình lỡ thêm abstract method thứ hai.
+## Lambda dùng biến bên ngoài theo một giới hạn
 
-Bốn hình cơ bản:
+Lambda có thể đọc biến local ở scope bên ngoài, miễn là biến đó `final` hoặc effectively final — nghĩa là sau khi gán, code không gán lại nó. Ví dụ, mình có thể đặt `int limit = 5` rồi để lambda so sánh một số với `limit`. Nếu sau đó gán lại `limit`, compiler báo lỗi.
 
-| Interface | Việc |
-| --- | --- |
-| `Predicate<T>` | nhận `T`, trả `boolean`. Method là `test`. |
-| `Consumer<T>` | nhận `T`, không trả gì. Method là `accept`. |
-| `Function<T, R>` | nhận `T`, trả `R`. Method là `apply`. |
-| `Supplier<R>` | không nhận gì, trả `R`. |
-
-`Predicate<Person>` thay được `CheckPerson`. `Consumer<Person>` thay được lời gọi in một người. `Function<Person, String>` lấy email rồi đưa cho một `Consumer<String>`.
-
-Hình hai tham số thêm tiền tố `Bi`, như `BiFunction`. `UnaryOperator` là `Function` mà kiểu vào và kiểu ra giống nhau. `BinaryOperator` là `BiFunction` cùng kiểu. Kiểu primitive có tiền tố riêng: `ToIntFunction` khi kết quả là `int`, `DoubleConsumer` khi đối số là `double`.
-
-Các interface này không phủ hết mọi hình lambda có thể có. Chúng đủ cho việc hay gặp. Interface chuyên một việc, như `FileFilter`, nằm ở package của việc đó.
-
-Khi một method nói nó nhận "function", nghĩa là một reference không `null` tới object implement functional interface đó, trừ khi tài liệu của method nói rõ là được `null`.
-
----
-
-## 3. Cú pháp, biến bên ngoài, và kiểu lấy từ chỗ đứng
-
-Lambda gồm tham số, mũi tên `->`, và một thân. Thân là một biểu thức hoặc một khối `{}`. Một tham số thì bỏ được ngoặc. Kiểu của tham số cũng bỏ được khi compiler suy ra. Biểu thức thì giá trị của nó là giá trị trả về. `return` không phải biểu thức, nên phải nằm trong ngoặc nhọn.
-
-```java
-interface IntegerMath {
-    int operation(int a, int b);
-}
-
-int operateBinary(int a, int b, IntegerMath op) {
-    return op.operation(a, b);
-}
-
-IntegerMath addition = (a, b) -> a + b;
-IntegerMath subtraction = (a, b) -> a - b;
-```
-
-`operateBinary(40, 2, addition)` trả `42`. `operateBinary(20, 10, subtraction)` trả `10`.
-
-Lambda không mở một tầng scope mới. Tên trong lambda hiểu như trong khối bao quanh. Tham số của lambda không được trùng biến local của khối đó. `this` trong lambda là `this` của class bao, không phải một object riêng của lambda.
-
-Lambda chỉ đọc biến local và tham số của khối bao khi biến đó là `final` hoặc effectively final. Gán lại biến đó trong lambda thì compiler báo lỗi: biến phải final hoặc effectively final. Đây là ràng buộc thật, không phải cảnh báo.
-
-Lambda không mang kiểu của riêng nó. Cùng một `() -> "done"` là `Callable` khi method cần giá trị trả về, và không được chọn overload `Runnable` vì `Runnable.run` không trả gì. Compiler nhìn chỗ lambda đứng: biến đang gán, `return`, đối số method, toán tử `?:`, hoặc một cast. Không suy ra chỗ đứng thì lambda không dùng được.
-
-Serialize một lambda được khi kiểu đích và các giá trị nó giữ từ bên ngoài đều serializable. Việc serialize lambda không nên làm, cùng lý do với inner class.
-
----
+Giới hạn này giúp tránh một nhầm lẫn: lambda không giữ một bản sao có thể tự thay đổi của local variable. Nếu logic cần state có thể đổi trong lúc lambda chạy, hãy thiết kế state đó rõ ràng thay vì cố sửa biến local bị capture.
 
 ## Kết luận
 
-Chỗ nào mình đang viết anonymous class chỉ để có một method, mình đổi thành lambda. Hình đã có trong `java.util.function` thì dùng `Predicate`, `Consumer`, `Function` hoặc `Supplier`, không khai báo interface mới cùng hình.
-
-Lambda đọc biến local thì biến đó không được gán lại sau khi khởi tạo. Cùng một lambda gán được vào nhiều kiểu. Kiểu nào được chọn là kiểu của chỗ nó đang đứng, thường là tham số của method.
+Khi một method cần hành vi thay đổi theo từng lần gọi, xem liệu có thể truyền lambda thay vì tạo nhiều method gần giống nhau. Functional interface là hợp đồng cho lambda; kiểu đích cho compiler biết tham số và kết quả mong đợi. Bắt đầu bằng `Predicate`, `Function`, `Consumer` hoặc `Supplier` khi chữ ký của chúng diễn đạt đúng nhu cầu.
 
 ## References
 
