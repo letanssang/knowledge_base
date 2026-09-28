@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Ask one series notebook to draft an article.
+# Ask one series notebook for an untrusted draft.
 # The notebook id is articles/<series>/notebook.toml.
 # The prompt is templates/notebooklm-prompt.md.
+# This script does not check the answer and does not write an article.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -37,6 +38,8 @@ if ! command -v notebooklm >/dev/null 2>&1; then
   echo "  notebooklm login" >&2
   exit 1
 fi
+
+echo "Untrusted NotebookLM answer. Do not save it until each factual claim has been checked against the source pages. See the Verify step in AGENTS.md." >&2
 
 notebooklm ask \
   -n "$id" \

@@ -1,6 +1,6 @@
 ---
 title: "Generics trong Java: Type Safety, Wildcards và Cơ chế Type Erasure"
-description: "Type parameter, raw type, bound, wildcard in/out và type erasure theo The Java Tutorials, cùng heap pollution trong JLS SE 25."
+description: "Generic đưa kiểu vào lúc biên dịch để khỏi cast. Raw type là dạng cũ trước JDK 5.0. Wildcard chọn theo dữ liệu đi vào hay đi ra. Lúc chạy không có class riêng cho từng kiểu tham số."
 
 date:
 updated:
@@ -20,96 +20,81 @@ language: vi
 
 # Generics trong Java: Type Safety, Wildcards và Cơ chế Type Erasure
 
-> **Tóm tắt:** Generics đưa kiểu vào chỗ tham số để compiler kiểm tra sớm hơn và bỏ bớt cast. Raw type còn để nói chuyện với code trước JDK 5.0. Type erasure thay type parameter bằng bound hoặc `Object`, nên không sinh class mới cho từng parameterized type.
+> **Tóm tắt:** `List` không generic bắt mình cast khi lấy phần tử, và cast sai chỉ nổ lúc chạy. Khai báo `List<String>` thì compiler chặn từ lúc biên dịch. Lúc chạy, `List<String>` và `List<Integer>` vẫn là cùng một class `List`. Wildcard `extends` nhận dữ liệu ra, `super` nhận dữ liệu vào.
 
 *Thời gian đọc: ~9 phút*
 
 ---
 
-## 1. Kiểm tra lúc biên dịch thay cho cast lúc chạy
+## 1. Cast ở chỗ lấy phần tử là chỗ bug nấp
 
-Bug lúc biên dịch hiện sớm. Bug lúc chạy có thể hiện ở chỗ rất xa nguyên nhân. Lesson Generics nói generics làm code ổn hơn bằng cách đưa nhiều bug hơn vào lúc biên dịch.
+Bug lúc biên dịch hiện ngay. Bug lúc chạy có thể hiện ở dòng rất xa chỗ mình nhét nhầm kiểu. Generic kéo nhiều lỗi kiểu về lúc biên dịch.
 
-Generics cho phép *type*, tức class và interface, làm tham số khi định nghĩa class, interface và method. Khác với formal parameter của method, đầu vào của formal parameter là giá trị, còn đầu vào của type parameter là kiểu. Cùng một đoạn code dùng lại với các kiểu khác nhau.
+Type parameter là kiểu đóng vai tham số của class, interface hoặc method. Tham số thường nhận giá trị. Type parameter nhận kiểu, nên cùng một đoạn code chạy cho nhiều kiểu.
 
-Tutorial liệt kê ba lợi ích so với code không generic:
+```java
+List list = new ArrayList();
+list.add("hello");
+String s = (String) list.get(0);
+```
 
-- Compiler kiểm tra kiểu mạnh hơn và báo lỗi nếu code phá type safety. Sửa lỗi biên dịch dễ hơn sửa lỗi runtime.
-- Hết cast. `List list = new ArrayList(); list.add("hello");` rồi `String s = (String) list.get(0);` đổi thành `List<String>` thì `list.get(0)` không cần cast.
-- Viết được thuật toán generic trên collection của nhiều kiểu, tùy biến được, type safe và dễ đọc hơn.
+Đổi thành `List<String>` thì `get` trả `String`. Không còn cast. Compiler cũng không cho `add` một `Integer`. Cùng cơ chế đó, một thuật toán viết một lần chạy trên collection của nhiều kiểu mà vẫn được kiểm kiểu.
 
 ---
 
-## 2. Raw type là tên generic không có type argument
+## 2. Raw type là tên generic bỏ mất kiểu tham số
 
-Raw type là tên của generic class hoặc interface không kèm type argument. `Box<Integer> intBox = new Box<>();` là parameterized type. `Box rawBox = new Box();` là raw type của `Box<T>`. Class hoặc interface không generic thì không phải raw type.
+`Box<Integer>` là kiểu đã gắn tham số. `Box` trơn, không có `<...>`, là raw type của `Box<T>`. Class không generic thì không gọi là raw type.
 
-Raw type có trong legacy code vì nhiều API, như các class Collections, chưa generic trước JDK 5.0. Dùng raw type thì mình nhận behavior thời trước generics: một `Box` đưa cho mình `Object`.
+Trước JDK 5.0, các class collection chưa có kiểu tham số. Code cũ vẫn còn, nên gán `Box<String>` vào một biến `Box` thì được. Chiều ngược lại thì compiler cảnh báo unchecked conversion: nó không đủ thông tin để chứng minh an toàn. Gọi `set` trên raw type cũng vậy. Cảnh báo đó nghĩa là phần kiểm tra bị hoãn tới lúc chạy. Mình tránh raw type, trừ khi đang chạm API viết trước generic.
 
-Gán parameterized type sang raw type thì được, để tương thích ngược:
+Warning unchecked mặc định không in chi tiết. Biên dịch với `-Xlint:unchecked` thì thấy dòng nào đang chuyển kiểu mà compiler không kiểm hết. `@SuppressWarnings("unchecked")` tắt cảnh báo ở đúng chỗ. `-Xlint:-unchecked` tắt hết.
 
-```java
-Box<String> stringBox = new Box<>();
-Box rawBox = stringBox;               // OK
-```
-
-Gán raw type sang parameterized type thì có warning unchecked conversion. Gọi method generic qua raw type cũng vậy. `rawBox.set(8)` là unchecked invocation tới `set(T)`. Warning cho thấy raw type đi vòng kiểm tra generic và để phần không an toàn tới runtime. Tutorial nói mình nên tránh raw type.
-
-"Unchecked" nghĩa là compiler không đủ thông tin kiểu để làm mọi kiểm tra cần cho type safety. Warning unchecked tắt mặc định, nhưng compiler vẫn gợi ý. Muốn thấy chi tiết thì biên dịch lại với `-Xlint:unchecked`. Tắt hẳn bằng `-Xlint:-unchecked`. Annotation `@SuppressWarnings("unchecked")` cũng chặn warning này.
-
-JLS SE 25 nói thêm vì sao raw type còn tồn tại. Để nối với legacy code không generic, mình được dùng erasure của một parameterized type. Đó là raw type. Thiết kế generic theo đuổi migration compatibility: code cũ tiến lên generic mà không bắt các module phát triển độc lập phải phụ thuộc nhau. Cái giá là không thể reify đầy đủ và đúng hệ thống generic, ít nhất trong lúc quá trình chuyển còn diễn ra.
-
-Heap pollution, cũng trong JLS §4.12.2, là việc một biến của parameterized type trỏ tới object không phải parameterized type đó. Nó chỉ xảy ra nếu chương trình làm một thao tác raw type đáng lẽ ra unchecked warning, hoặc alias một array có element type không reifiable qua một array supertype raw hoặc non-generic. Ví dụ:
+Trộn raw type vào biến generic tạo heap pollution: biến khai báo `List<String>` nhưng object bên trong không phải `List<String>`.
 
 ```java
 List l = new ArrayList<Number>();
 List<String> ls = l;  // unchecked warning
 ```
 
-Nếu chạy, `ls` không trỏ tới một `List<String>`. Không nhận ra lúc chạy vì type variable không được reify. Instance không mang type argument đã dùng để tạo ra chúng. JLS gọi kiểu gán này là very bad style.
+Nếu đoạn này chạy, `ls` không trỏ tới một `List<String>`. Lúc chạy không phát hiện được, vì object không mang type argument đã dùng để tạo nó. Gán kiểu này là kiểu viết rất xấu. Raw type còn để nói chuyện với code cũ, không phải để viết code mới cho gọn.
 
 ---
 
-## 3. Bound và wildcard không cùng một việc
+## 3. Bound giới hạn kiểu, wildcard mô tả hướng dữ liệu
 
-Bounded type parameter hạn chế kiểu được dùng làm type argument. Method chỉ muốn `Number` hoặc subclass thì khai báo tên type parameter, rồi `extends`, rồi upper bound. Trong ngữ cảnh này `extends` nghĩa rộng: extends với class, hoặc implements với interface.
+Method chỉ nhận số thì khai báo `<U extends Number>`. Ở đây `extends` nghĩa cả "kế thừa class" lẫn "implement interface". `inspect("some text")` không biên dịch vì `String` không phải `Number`. Bound còn cho phép gọi method của bound đó. `T extends Integer` thì `n.intValue()` gọi được.
 
-`public <U extends Number> void inspect(U u)` làm `inspect("some text")` không biên dịch, vì `String` không phải `Number`. Bound còn cho phép gọi method định nghĩa trên bound. `NaturalNumber<T extends Integer>` gọi được `n.intValue()` vì `intValue` nằm trên `Integer`.
+Nhiều bound viết `<T extends A & B & C>`. `T` là subtype của tất cả. Nếu có một class trong bound, class đó đứng đầu. `T extends B & A & C` khi `A` là class và không đứng đầu thì không biên dịch.
 
-Nhiều bound viết `<T extends B1 & B2 & B3>`. Type variable là subtype của mọi kiểu trong bound. Nếu một bound là class, class đó phải đứng đầu. `T extends B & A & C` khi `A` là class và không đứng đầu thì là lỗi biên dịch.
+Wildcard dùng cho tham số của method, khi mình chưa muốn chốt một kiểu. Nghĩ theo hướng dữ liệu:
 
-Wildcard là chuyện khác, dùng khi thiết kế tham số của method. Trang Guidelines for Wildcard Use chia biến thành hai vai:
+- Tham số đưa dữ liệu vào cho method đọc, như `src` của `copy(src, dest)`, dùng `? extends ...`.
+- Tham số nhận dữ liệu method ghi ra, như `dest`, dùng `? super ...`.
+- Chỉ cần method của `Object` thì `?` không bound.
+- Vừa đọc vừa ghi trên cùng biến thì không dùng wildcard.
 
-- Biến "in" cung cấp dữ liệu cho code. Trong `copy(src, dest)`, `src` là "in". Khai báo bằng upper bounded wildcard, keyword `extends`.
-- Biến "out" giữ dữ liệu để chỗ khác dùng. `dest` nhận dữ liệu, nên là "out". Khai báo bằng lower bounded wildcard, keyword `super`.
-- Nếu biến "in" chỉ cần method của `Object`, dùng unbounded wildcard.
-- Nếu code cần dùng biến vừa như "in" vừa như "out", không dùng wildcard.
+Không trả wildcard từ method. Người gọi sẽ phải xử lý wildcard đó tiếp.
 
-Các guideline này không áp dụng cho return type của method. Dùng wildcard làm return type nên tránh, vì người gọi phải đối mặt với wildcard.
-
-`List<? extends ...>` có thể nghĩ một cách không chính thức là read-only, nhưng đó không phải đảm bảo chặt. `List<EvenNumber>` là subtype của `List<? extends NaturalNumber>`, nên gán được. `ln.add(new NaturalNumber(35))` là lỗi biên dịch: không dùng `ln` để thêm một natural number vào list các even number. Vẫn làm được bốn việc trang liệt kê: thêm `null`, gọi `clear`, lấy iterator rồi `remove`, và capture wildcard để ghi các phần tử đã đọc từ list. Không cất được phần tử mới và không đổi được phần tử đang có. Vì vậy mình có thể nghĩ nó là read-only, trong khi nó không read-only theo nghĩa chặt nhất.
+`List<? extends NaturalNumber>` trông như danh sách chỉ đọc. Không phải. `List<EvenNumber>` gán được vào biến đó, vì mọi even number là natural number. `add(new NaturalNumber(35))` thì không biên dịch: danh sách thật có thể toàn số chẵn, mình không được nhét một số tự nhiên bất kỳ. Vẫn làm được bốn việc: `add(null)`, `clear`, `remove` trên iterator, và ghi lại phần tử vừa đọc ra sau khi đã capture wildcard. Không thêm được phần tử mới khác `null`, và không đổi được phần tử đang có.
 
 ---
 
-## 4. Type erasure
+## 4. Lúc chạy không có class Box của String
 
-Compiler áp dụng type erasure để hiện thực generics. Tutorial mô tả ba việc:
+Compiler hiện thực generic bằng type erasure. Type parameter có bound thì bị thay bằng bound. Không có bound thì bị thay bằng `Object`. Bytecode chỉ còn class, interface và method bình thường. Compiler chèn cast ở chỗ cần để kiểu vẫn đúng, và sinh bridge method để override vẫn chạy khi class con mở rộng kiểu generic.
 
-- Thay mọi type parameter trong generic type bằng bound của chúng, hoặc bằng `Object` nếu type parameter không bound. Bytecode sinh ra chỉ còn class, interface và method bình thường.
-- Chèn cast khi cần để giữ type safety.
-- Sinh bridge method để giữ polymorphism ở generic type được extend.
-
-Type erasure bảo đảm không tạo class mới cho parameterized type. Hệ quả trang nêu: generics không phát sinh runtime overhead.
-
-Mình không đọc câu này thành "mọi thông tin kiểu đều biến mất và cast không bao giờ được chèn". Cùng trang nói compiler chèn cast khi cần, và sinh bridge method. Phần biến mất là class riêng cho từng `Box<String>` hay `Box<Integer>`.
+Không có class `Box<String>` riêng và class `Box<Integer>` riêng. Vì không sinh class mới cho từng kiểu tham số, generic không thêm chi phí lúc chạy theo kiểu "mỗi tham số một class". Cast mà compiler chèn vẫn còn. Đó là lý do trộn raw type có thể qua mặt biên dịch rồi mới vỡ lúc cast.
 
 ---
 
 ## Kết luận
 
-Mình khai báo type argument ở collection và ở class generic của mình, vì đó là chỗ compiler bắt cast sai trước khi chạy. Raw type chỉ còn khi phải chạm API viết trước JDK 5.0. Gán raw type vào biến generic là unchecked conversion, không phải một phép gán im lặng an toàn.
+Collection và class của mình, mình ghi kiểu tham số. `List<String>` bắt nhét nhầm từ lúc biên dịch. `List` trơn hoãn việc đó tới lúc chạy.
 
-Wildcard mình chọn theo vai của tham số trên trang guideline: dữ liệu đi vào method thì `extends`, dữ liệu đi ra khỏi method thì `super`, còn vừa đọc vừa ghi thì không wildcard. `List<? extends ...>` không phải một list cấm mọi sửa đổi. Nó cấm thêm phần tử mới không phải `null`, và vẫn cho `clear` cùng `remove` của iterator.
+Method chỉ đọc từ một collection thì tham số là `? extends`. Method chỉ ghi vào thì `? super`. Method vừa đọc vừa ghi thì chốt một kiểu, không wildcard. Đừng coi `List<? extends ...>` là danh sách đóng băng: `clear` và `remove` vẫn sửa được nó.
+
+Raw type chỉ còn khi gọi API cũ. Gán nó vào biến generic mà thấy unchecked warning thì đó là chỗ heap pollution bắt đầu, không phải cảnh báo để tắt cho hết.
 
 ## References
 

@@ -125,12 +125,13 @@ Avoid GitHub-only features unless there is no alternative. That includes alert b
 
 Each series has its own NotebookLM notebook. The notebook id is `id` in `articles/<series>/notebook.toml`. Sign in once with `notebooklm login`, as described in the root `README.md`. Commands for every coding agent are in the "Draft an article" section of `AGENTS.md`.
 
-The text NotebookLM returns is not a source. Before it is saved:
+The text NotebookLM returns is not a source and is not an article yet. After it returns, and before the article file is created or edited:
 
 1. Search and import the official pages for the topic.
 2. Generate the draft from those pages only.
-3. Open each page and check every factual sentence against it. A control ID, API name, version, tool name, number, or absolute claim ("always", "never", "triệt để") needs a sentence on the page. Delete a claim the page does not support. Rewrite a claim the page states more narrowly. Do not recommend a tool or API the page marks as deprecated.
-4. Save the result as `status: draft`.
+3. Verify that draft against the pages passed to the generator. A control ID, API name, version, tool name, number, or absolute claim ("always", "never", "triệt để") needs a sentence on the page. Delete a claim the page does not support. Rewrite a claim the page states more narrowly. Do not recommend a tool or API the page marks as deprecated. The order and the report to the user are in the "Verify" step of `AGENTS.md`.
+4. Rewrite the surviving claims so a later reading explains the mechanism. Do not add a fact in that rewrite, and do not leave the verification notes in the article.
+5. Save the result as `status: draft`.
 
 ## Adding an article
 

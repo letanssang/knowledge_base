@@ -1,6 +1,6 @@
 ---
 title: "Java Stream API: Xử lý dữ liệu tuần tự, Song song và Cơ chế Lazy Evaluation"
-description: "Stream không lưu phần tử. Intermediate operation luôn lazy. Terminal operation tiêu thụ pipeline. Song song không đổi kết quả, trừ thao tác nondeterministic như findAny."
+description: "filter và map chưa chạy khi mình gọi chúng. Pipeline chỉ chạy lúc có terminal operation, rồi không dùng lại được. Song song không được đổi kết quả, trừ thao tác như findAny."
 
 date:
 updated:
@@ -20,98 +20,87 @@ language: vi
 
 # Java Stream API: Xử lý dữ liệu tuần tự, Song song và Cơ chế Lazy Evaluation
 
-> **Tóm tắt:** Stream chuyển phần tử từ một nguồn qua pipeline, không phải cấu trúc dữ liệu cất phần tử. `filter` và `map` trả stream mới và không chạy cho đến terminal operation. Sau terminal operation, pipeline đã bị tiêu thụ.
+> **Tóm tắt:** Stream không cất phần tử. Nó kéo phần tử từ một nguồn qua các bước. `filter` và `map` chỉ tạo bước mới. Nguồn bắt đầu được đọc khi có `forEach`, `reduce`, `sum` hoặc một terminal operation khác. Xong một lần thì pipeline hết dùng.
 
 *Thời gian đọc: ~9 phút*
 
 ---
 
-## 1. Stream không phải một collection thứ hai
+## 1. Danh sách vẫn nằm yên khi mình mới viết filter
 
-Package `java.util.stream` có từ Java SE 1.8. Abstraction chính là stream. `Stream`, `IntStream`, `LongStream` và `DoubleStream` là stream trên object và trên `int`, `long`, `double`.
+`roster.stream().filter(...).map(...).forEach(...)` trông như ba việc chạy ngay. `filter` và `map` chưa đụng tới người nào trong roster. Chúng trả một stream mới. `forEach` mới làm pipeline chạy.
 
-Stream khác collection ở năm điểm tài liệu package nêu:
+Stream khác collection ở năm điểm. Nó không phải chỗ cất dữ liệu. Nó chuyển phần tử từ một nguồn, như collection, array, hàm sinh, hoặc kênh đọc, qua các bước tính. Lọc một stream lấy từ collection tạo stream mới thiếu các phần tử bị loại. Collection gốc không mất phần tử. Nhiều bước có thể làm lười: tìm chuỗi đầu tiên có ba nguyên âm liên tiếp thì không cần đọc hết nguồn. Stream không bắt buộc hữu hạn. `limit(n)` hoặc `findFirst()` cho phép một nguồn vô hạn dừng trong thời gian hữu hạn. Mỗi phần tử chỉ được thăm một lần. Muốn đi lại thì lấy stream mới từ nguồn, giống phải tạo `Iterator` mới.
 
-- Không lưu trữ. Stream không phải cấu trúc dữ liệu cất phần tử. Nó chuyển phần tử từ một nguồn, như một cấu trúc dữ liệu, một array, một hàm sinh, hoặc một kênh I/O, qua một pipeline các thao tác tính toán.
-- Mang tính hàm. Thao tác trên stream tạo kết quả nhưng không sửa nguồn. Lọc một `Stream` lấy từ collection tạo stream mới không chứa phần tử bị lọc, chứ không xóa phần tử khỏi collection nguồn.
-- Hướng tới lười. Nhiều thao tác, như lọc, ánh xạ, hoặc bỏ trùng, có thể hiện thực lười. Ví dụ tìm chuỗi đầu có ba nguyên âm liên tiếp thì không cần xét mọi chuỗi đầu vào. Thao tác chia thành intermediate, tức thao tác sinh stream, và terminal, tức thao tác sinh giá trị hoặc side-effect. Intermediate operation luôn lazy.
-- Có thể không bị chặn. Collection có kích thước hữu hạn. Stream thì không bắt buộc. Thao tác short-circuit như `limit(n)` hoặc `findFirst()` cho phép tính trên stream vô hạn kết thúc trong thời gian hữu hạn.
-- Tiêu thụ được. Phần tử của một stream chỉ được thăm một lần trong đời stream. Giống `Iterator`, muốn thăm lại thì phải tạo stream mới.
-
-Nguồn stream gồm `Collection.stream()` và `Collection.parallelStream()`, `Arrays.stream`, factory như `Stream.of`, `IntStream.range`, `Stream.iterate`, `BufferedReader.lines()`, method trong `Files`, `Random.ints()`, và nhiều method khác trong JDK như `BitSet.stream()`, `Pattern.splitAsStream` và `JarFile.stream()`.
-
-Tutorial lambda gọi `filter`, `map` và `forEach` là aggregate operation. Chúng xử lý phần tử từ stream, không xử lý trực tiếp từ collection. Vì vậy ví dụ trên trang bắt đầu bằng `roster.stream()`. Một pipeline trong ví dụ đó là `filter`, rồi `map`, rồi `forEach`.
+Package `java.util.stream` có từ Java SE 8. `Stream` là stream object. `IntStream`, `LongStream` và `DoubleStream` là stream số primitive, đỡ phải đóng hộp từng số. Nguồn thường gặp là `collection.stream()`, `collection.parallelStream()`, `Arrays.stream`, `Stream.of`, `IntStream.range`, `Stream.iterate`, `BufferedReader.lines()`, và các method đọc file hoặc số ngẫu nhiên.
 
 ---
 
-## 2. Intermediate luôn lazy, terminal thì tiêu thụ pipeline
+## 2. Lazy đến khi có bước cuối
 
-Một pipeline gồm một nguồn, không hoặc nhiều intermediate operation như `Stream.filter` hay `Stream.map`, và một terminal operation như `Stream.forEach` hay `Stream.reduce`.
+Một pipeline là nguồn, rồi không hoặc nhiều bước intermediate như `filter` và `map`, rồi một bước terminal như `forEach` hoặc `reduce`.
 
-Intermediate operation trả một stream mới. Chúng luôn *lazy*. Gọi `filter()` không lọc ngay. Nó tạo stream mới mà khi được duyệt sẽ chứa phần tử của stream ban đầu khớp predicate. Việc duyệt nguồn của pipeline không bắt đầu cho đến khi terminal operation của pipeline được thực thi.
+Gọi `filter` không lọc. Nó tạo stream mà lúc được duyệt sẽ chỉ còn phần tử khớp predicate. Không có bước terminal thì nguồn chưa được đọc.
 
-Terminal operation, như `Stream.forEach` hoặc `IntStream.sum`, có thể duyệt stream để tạo kết quả hoặc side-effect. Sau terminal operation, pipeline được coi là đã tiêu thụ và không dùng lại được. Muốn duyệt cùng nguồn lần nữa thì phải lấy stream mới từ nguồn. Hầu hết terminal operation là *eager*: chúng duyệt nguồn và xử lý pipeline xong rồi mới trả về. Chỉ `iterator()` và `spliterator()` không eager. Hai method đó là lối thoát để client tự điều khiển việc duyệt khi các thao tác có sẵn không đủ.
+Bước terminal duyệt nguồn để ra một giá trị hoặc một side-effect. Sau đó pipeline đã bị tiêu thụ. Gọi thêm một terminal operation trên cùng stream là dùng lại thứ đã xong. Hầu hết bước terminal chạy cho xong rồi mới trả về. `iterator()` và `spliterator()` không vậy. Chúng để mình tự kéo pipeline khi các bước có sẵn không đủ.
 
-Xử lý lười cho phép gộp. Trong một pipeline lọc, ánh xạ rồi cộng, filtering, mapping và summing có thể nhập thành một lần đi qua dữ liệu, với ít trạng thái trung gian. Lười cũng tránh xét hết dữ liệu khi không cần. Tìm chuỗi đầu dài hơn 1000 ký tự thì chỉ cần xét đủ chuỗi để tìm một chuỗi đạt, không cần xét mọi chuỗi của nguồn. Điều này càng quan trọng khi stream đầu vào là vô hạn, không chỉ là lớn.
+Vì chưa chạy sớm, lọc, đổi dạng và cộng dồn có thể nhập thành một lần đi qua dữ liệu. Tìm chuỗi dài hơn 1000 ký tự thì chỉ đọc đến khi thấy một chuỗi, không đọc hết. Nguồn vô hạn thì điều này quyết định pipeline có dừng hay không.
 
-Intermediate operation chia thêm thành stateless và stateful. `filter` và `map` là stateless: không giữ trạng thái từ phần tử đã thấy khi xử lý phần tử mới. Mỗi phần tử xử lý độc lập với thao tác trên phần tử khác. `distinct` và `sorted` là stateful: có thể mang trạng thái từ phần tử đã thấy. Stateful có thể phải xử lý toàn bộ đầu vào trước khi có kết quả. Sắp xếp thì không tạo được kết quả nào cho đến khi đã thấy mọi phần tử. Dưới tính toán song song, một số pipeline có intermediate stateful có thể cần nhiều lần đi qua dữ liệu hoặc phải đệm một lượng dữ liệu đáng kể. Pipeline chỉ gồm intermediate stateless xử lý được trong một lần đi, dù tuần tự hay song song, với ít đệm.
+`filter` và `map` không nhớ phần tử trước. Mỗi phần tử xử lý riêng. `distinct` và `sorted` thì nhớ. Sắp xếp không đưa ra được phần tử nào cho đến khi đã thấy tất cả. Bước có nhớ, khi chạy song song, có thể phải đi qua dữ liệu nhiều lần hoặc phải giữ một lượng lớn trong bộ đệm. Pipeline toàn bước không nhớ thì một lần đi là đủ, tuần tự hay song song.
 
-Một intermediate operation là short-circuiting nếu với đầu vào vô hạn nó có thể tạo ra một stream hữu hạn. Một terminal operation là short-circuiting nếu với đầu vào vô hạn nó có thể kết thúc trong thời gian hữu hạn. Có một thao tác short-circuiting trong pipeline là điều kiện cần, nhưng không đủ, để xử lý một stream vô hạn kết thúc bình thường trong thời gian hữu hạn.
-
----
-
-## 3. Song song không phải một cờ gắn vào từng thao tác
-
-Vòng `for` tường minh vốn là tuần tự. Stream tạo điều kiện chạy song song bằng cách đặt lại phép tính thành pipeline các aggregate operation, thay vì lệnh trên từng phần tử. Mọi thao tác stream chạy được tuần tự hoặc song song. Implementation stream trong JDK tạo stream tuần tự trừ khi song song được yêu cầu rõ. `Collection.stream()` cho stream tuần tự. `Collection.parallelStream()` cho stream song song. `IntStream.range` tạo stream tuần tự, rồi `BaseStream.parallel()` song song hóa nó.
-
-Chế độ tuần tự hay song song của stream lúc terminal operation được gọi sẽ quyết định cả pipeline chạy thế nào. `BaseStream.isParallel()` cho biết chế độ. `sequential()` và `parallel()` đổi chế độ. Lần đặt chế độ tuần tự hoặc song song gần nhất áp dụng cho việc thực thi toàn bộ pipeline.
-
-Trừ thao tác được nêu là nondeterministic một cách tường minh, như `findAny()`, việc stream chạy tuần tự hay song song không nên đổi kết quả của phép tính.
+Một bước intermediate short-circuit là bước có thể biến nguồn vô hạn thành stream hữu hạn. Một bước terminal short-circuit là bước có thể dừng trong thời gian hữu hạn dù nguồn vô hạn. Có một bước như vậy là điều kiện cần để pipeline vô hạn dừng bình thường. Chưa đủ để chắc nó sẽ dừng.
 
 ---
 
-## 4. Tham số hành vi, side-effect, và `ArrayList`
+## 3. Song song là chế độ của cả pipeline
 
-Hầu hết thao tác stream nhận tham số mô tả hành vi do người dùng chỉ định, thường là lambda. Để giữ hành vi đúng, các *behavioral parameter* này phải *non-interfering*, và trong hầu hết trường hợp phải *stateless*. Chúng luôn là instance của một functional interface, như `Function`, và thường là lambda hoặc method reference.
+Vòng `for` viết tay chạy từng phần tử một. Stream đổi cách nghĩ: cả nhóm phần tử đi qua các bước, nên cùng các bước đó chạy tuần tự hoặc song song được. JDK tạo stream tuần tự, trừ khi mình xin song song. `stream()` là tuần tự. `parallelStream()` là song song. `IntStream.range(...).parallel()` cũng vậy.
 
-Stream cho phép aggregate operation có thể song song trên nhiều nguồn, kể cả collection không an toàn đa luồng như `ArrayList`. Tài liệu nói điều đó chỉ có thể nếu ngăn được interference.
+Chế độ tính tại lúc bước terminal được gọi, và lần đặt `sequential()` hoặc `parallel()` gần nhất áp cho cả pipeline. `isParallel()` cho biết đang ở chế độ nào.
 
-Một lambda stateful là lambda có kết quả phụ thuộc trạng thái có thể đổi trong lúc pipeline chạy. Ví dụ trên trang:
+Kết quả không được đổi chỉ vì mình bật song song. Ngoại lệ là bước được ghi là nondeterministic, như `findAny()`.
+
+---
+
+## 4. Đừng nhét kết quả vào ArrayList bằng forEach
+
+Lambda đưa vào `map` hoặc `filter` phải không đụng nguồn của stream trong lúc pipeline chạy, và trong hầu hết trường hợp không được phụ thuộc trạng thái đang đổi. Stream song song chạy được cả trên `ArrayList`, vốn không an toàn đa luồng, chỉ khi lambda không phá nguồn.
+
+Lambda này phụ thuộc trạng thái:
 
 ```java
 Set<Integer> seen = Collections.synchronizedSet(new HashSet<>());
-stream.parallel().map(e -> { if (seen.add(e)) return 0; else return e; })
+stream.parallel().map(e -> {
+    if (seen.add(e)) return 0;
+    else return e;
+});
 ```
 
-Nếu `map` chạy song song, kết quả của cùng một đầu vào có thể khác nhau giữa các lần chạy vì lịch thread. Lambda stateless thì kết quả luôn giống nhau. Truy cập trạng thái mutable từ behavioral parameter là một lựa chọn xấu: không synchronized thì có data race và code hỏng. Có synchronized thì tranh chấp làm hỏng phần lợi của song song. Hướng trang nêu là tránh hẳn behavioral parameter có trạng thái.
+Cùng một đầu vào, hai lần chạy song song có thể ra khác nhau vì lịch thread. Lambda không đụng `seen` thì cùng đầu vào ra cùng kết quả. Khóa `seen` thì hết data race nhưng các thread chờ nhau, phần lợi của song song mất. Cách ổn là viết lại pipeline để không cần trạng thái đó.
 
-Side-effect trong behavioral parameter nói chung bị khuyến cáo không dùng. Chúng dễ phá yêu cầu stateless và tạo nguy cơ an toàn luồng khác. Nếu vẫn có side-effect, trừ khi được nêu rõ, không có đảm bảo về:
+Side-effect trong lambda còn dễ làm kết quả biến mất. Trừ khi method nói rõ, không có gì đảm bảo side-effect được thread khác nhìn thấy, rằng các bước trên cùng một phần tử chạy cùng một thread, hay rằng lambda được gọi. Implementation được bỏ một bước nếu chứng minh được kết quả không đổi. `count` là một chỗ việc bỏ đó xảy ra.
 
-- visibility của side-effect đó với thread khác
-- các thao tác khác nhau trên "cùng" một phần tử trong cùng pipeline có chạy trên cùng một thread hay không
-- behavioral parameter có luôn được gọi hay không, vì implementation được phép bỏ một thao tác hoặc cả một stage nếu chứng minh được việc đó không đổi kết quả
+`IntStream.range(0, 5).parallel().map(x -> x * 2).toArray()` phải ra `[0, 2, 4, 6, 8]`. Đó là kết quả đúng thứ tự gặp của nguồn. Thứ tự gọi `map` trên từng số, và thread nào gọi, thì không được đảm bảo.
 
-Thứ tự side-effect có thể bất ngờ. `IntStream.range(0, 5).parallel().map(x -> x * 2).toArray()` phải ra `[0, 2, 4, 6, 8]`, tức kết quả khớp encounter order. Không có đảm bảo về thứ tự hàm map được áp vào từng phần tử, cũng không có đảm bảo thread nào chạy behavioral parameter của một phần tử.
+`forEach` và `forEachOrdered` là hai terminal operation mà side-effect được thực thi. Các bước khác có thể bị bỏ qua phần side-effect. `println` để xem dữ liệu thường vô hại. `peek` chỉ tồn tại nhờ side-effect, nên mình dùng khi thực sự cần nhìn giữa pipeline.
 
-Trừ terminal operation `forEach` và `forEachOrdered`, side-effect của behavioral parameter có thể không được thực thi khi implementation tối ưu bỏ chúng mà không đổi kết quả. Trang chỉ API note của `count` như một ví dụ cụ thể. `println` để gỡ lỗi thường vô hại. `forEach()` và `peek()` chỉ hoạt động nhờ side-effect, nên dùng cẩn thận.
-
-Đẩy phần tử vào một `ArrayList` bằng `forEach` là side-effect không cần thiết. Chạy song song thì `ArrayList` không an toàn đa luồng sẽ cho kết quả sai. Thêm synchronized thì gây tranh chấp. Trang thay bằng `toList()`:
+Gom chuỗi khớp regex vào một `ArrayList` bằng `forEach` là side-effect không cần. Chạy song song thì `ArrayList` cho kết quả sai. Thêm khóa thì các thread nghẽn. Đổi thành `toList()`:
 
 ```java
-List<String> results =
-    stream.filter(s -> pattern.matcher(s).matches())
-          .toList();
+List<String> results = stream
+    .filter(s -> pattern.matcher(s).matches())
+    .toList();
 ```
 
-`reduce` được trang ưu tiên hơn tích lũy bằng cách sửa một cấu trúc. Một reduce dựng đúng thì song song hóa được, miễn các hàm xử lý phần tử là associative và stateless. Ví dụ `numbers.stream().reduce(0, (x, y) -> x + y)`.
+Cộng một stream số cũng vậy. `reduce(0, (x, y) -> x + y)` cộng trên cả stream. Hàm đưa vào `reduce` cần kết hợp được và không giữ trạng thái thì phép cộng này song song hóa được. Tích lũy bằng cách sửa một biến bên ngoài thì không.
 
 ---
 
 ## Kết luận
 
-Mình không coi một chuỗi `filter` và `map` là đã chạy. Chúng tạo stream mới. Nguồn chỉ bị duyệt khi có terminal operation. Gọi terminal operation lần hai trên cùng pipeline thì không được. Phải lấy stream mới từ nguồn.
+Mình đọc một pipeline từ bước cuối ngược lên. Không có `forEach`, `reduce`, `count`, `toList` hoặc một terminal operation khác thì các `filter` và `map` phía trước chưa chạy. Chạy xong thì stream đó hết. Lần nữa thì `stream()` lại từ nguồn.
 
-Song song mình bật ở nguồn, bằng `parallelStream()` hoặc `parallel()`, không phải bằng cách đổi từng `filter`. Kết quả không nên đổi chỉ vì chế độ song song, trừ thao tác như `findAny()`. Lambda đưa vào stream thì không sửa nguồn và không giữ trạng thái đổi trong lúc pipeline chạy. Gom kết quả thì mình dùng `toList` hoặc `reduce`, không `forEach` vào một `ArrayList`.
+Bật song song ở nguồn, bằng `parallelStream()` hoặc `parallel()`, rồi giữ lambda không sửa nguồn và không nhớ trạng thái đổi giữa chừng. Gom kết quả bằng `toList` hoặc `reduce`. `forEach` vào một `ArrayList` vừa thừa vừa sai khi pipeline song song.
 
 ## References
 

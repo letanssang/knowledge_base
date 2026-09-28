@@ -62,21 +62,20 @@ notebooklm ask -n <id> -s <source-id> \
 
 Repeat `-s` for each selected source. Read the answer from the JSON field. The plain-text CLI wraps near 80 columns and drops spaces, which glues words and splits URLs. Do not save that transcript.
 
-`scripts/draft-article.sh <series>` asks every source in the notebook. Use it only when the draft should cover the whole series notebook.
+`scripts/draft-article.sh <series>` asks every source in the notebook and prints the answer. It does not check or save an article. Use it only when the draft should cover the whole series notebook.
 
-### Check the content
+### Verify
 
-Do this before saving. The NotebookLM answer is untrusted. It can misread a source, mix two sources, or state a conclusion the page does not make. Do not save that text until each factual sentence has been checked against the original page.
+Do this after `notebooklm ask` returns, before creating or editing the article file. The answer is untrusted. It can misread a source, mix two sources, or state a conclusion the page does not make.
 
-Open the sources passed to `ask -s`. For every control ID, API or method name, version, API level, tool name, number, and absolute wording ("always", "never", "triệt để"), find the sentence on the page that supports it.
+1. Keep the JSON `answer` outside the repository. Do not paste it into `index.md`.
+2. List each factual claim a reader could act on: control ID, API or method name, version, API level, tool name, number, and absolute wording ("always", "never", "triệt để").
+3. Open every URL passed with `-s`. For each claim, find the sentence on one of those pages that supports it.
+4. No supporting sentence: drop the claim. The page is narrower or different: keep the page's wording. The page marks a tool or API as deprecated or replaced: do not recommend it. Two claims disagree: keep the one that matches the page. A reference URL that 404s is dropped. The title stays as plain text. The link text must name the page that opens.
+5. Rewrite only the claims that survived, in the voice of `templates/notebooklm-prompt.md`. Do not add a fact during that rewrite. The check stays out of the article: no "the page says", no note of which sentence was corrected. Source titles and URLs belong in References.
+6. Tell the user which claims were removed or rewritten, and which source page decided it.
 
-- No supporting sentence: delete the claim.
-- The page says something narrower or different: rewrite the claim to match the page, not the NotebookLM paraphrase.
-- The page marks a tool or API as deprecated or replaced: do not recommend it.
-- Two sections of the draft disagree: rewrite them so they agree with the page.
-- A reference URL that 404s is dropped. The title stays as plain text. The link text must name the page that opens.
-
-Tell the user which claims were removed or rewritten, and which source page decided it. Leave `status: draft`.
+Saving before this step is not allowed. Leave `status: draft`.
 
 ### Save
 
@@ -84,4 +83,4 @@ Tell the user which claims were removed or rewritten, and which source page deci
 - `status: draft`. Leave `date` and `updated` empty. Set `series` to the display name and `series_order` to the folder prefix.
 - If the user gave a title, put that exact text in `title` and the level-1 heading. Otherwise leave `title: ""` and do not invent one.
 - Add relative previous and next links. Update the neighboring article and set the roadmap row to Draft.
-- Do not commit or set `status: published` unless the user asks. Publishing requires the content check above to have passed.
+- Do not commit or set `status: published` unless the user asks. Publishing requires the verify step above to have passed.

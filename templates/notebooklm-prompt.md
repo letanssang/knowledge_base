@@ -6,7 +6,18 @@ Viết một bài Markdown duy nhất. Trả về đúng bài viết, không có
 
 Learn → Understand → Apply → Write.
 
-Bài không phải bản viết lại tài liệu. Viết bằng tiếng Việt, ngôi thứ nhất ("mình"), như một developer đã đọc nguồn và tự giải thích lại. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh đã thông dụng. Không dịch một thuật ngữ chỉ để có bản tiếng Việt. Ví dụ giữ nguyên: authentication, authorization, attack surface, runtime, dependency, reverse engineering, secure storage, threat model.
+Người đọc là chính mình vài tháng sau, khi không mở lại tài liệu. Bài phải làm mình hiểu lại cơ chế chỉ bằng bài này.
+
+Viết bằng tiếng Việt, ngôi thứ nhất ("mình"). "Mình" là người đang dùng khái niệm. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh đã thông dụng. Không dịch một thuật ngữ chỉ để có bản tiếng Việt. Ví dụ giữ nguyên: authentication, authorization, attack surface, runtime, dependency, reverse engineering, secure storage, threat model.
+
+Bài không phải biên bản đọc tài liệu và không phải bản chép lại từng mục. Với mỗi ý chính, đi theo thứ tự này khi nguồn đủ dữ liệu:
+
+1. Một tình huống ngắn, để thấy vì sao thứ này tồn tại.
+2. Cơ chế, kèm một ví dụ đủ nhỏ để hình dung.
+3. Quy tắc nói thẳng.
+4. Một chỗ dễ sai, mô tả như việc gặp khi viết code.
+
+Không mở bài bằng việc đọc tài liệu. Không dẫn ý bằng "trang nói", "đặc tả liệt kê", "tutorial đưa ví dụ", "mình từng nhớ nhầm", "banner của trang", hay việc câu này lấy từ nguồn nào. Không ghi chú câu nào đã bị sửa. Tên tài liệu và URL chỉ xuất hiện ở References. Người lưu bài sẽ đối chiếu từng câu với trang nguồn sau khi bài này được trả về. Việc đó không viết vào bài.
 
 Bài phải trả lời, theo các mục phù hợp với nguồn, không phải bằng bảy heading cố định:
 
@@ -16,9 +27,8 @@ Bài phải trả lời, theo các mục phù hợp với nguồn, không phải
 - Nó hoạt động như thế nào?
 - Điều gì có thể sai?
 - Áp dụng trong thực tế ra sao?
-- Mình học được gì?
 
-Chỉ viết những gì nguồn đã cho phép khẳng định. Nếu nguồn không đủ để kết luận, nói thẳng giới hạn đó thay vì suy diễn.
+Chỉ viết những gì nguồn đã cho phép khẳng định. Nếu nguồn không đủ để kết luận, nói giới hạn của cơ chế. Không suy diễn, và không kể quá trình chọn nguồn.
 
 ## Định dạng
 
@@ -50,7 +60,7 @@ Sau front matter, thân bài theo đúng thứ tự này:
 2. Một dòng `*Thời gian đọc: ~N phút*`. Ước lượng từ độ dài bài.
 3. Một dòng `---`.
 4. Các mục chính đánh số, heading cấp 2: `## 1. ...`, `## 2. ...`. Mục con là heading cấp 3. Đặt `---` giữa các mục chính.
-5. `## Kết luận`, nêu điều mình rút ra và cách áp dụng. Không lặp lại toàn bộ bài.
+5. `## Kết luận`, nói lần sau gặp tình huống này thì làm gì. Không lặp lại toàn bộ bài và không kể mình đã đọc được gì.
 6. `## References`. Mỗi nguồn là một mục danh sách, link Markdown tới đúng URL có trong nguồn. Nếu nguồn không có URL, ghi tên tài liệu và không bịa link. Không thêm mục Series.
 
 Không chèn ảnh. Không viết link tới bài khác trong repo.
