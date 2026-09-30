@@ -127,7 +127,7 @@ Each series has its own NotebookLM notebook. The notebook id is `id` in `article
 
 The text NotebookLM returns is not a source and is not an article yet. After it returns, and before the article file is created or edited:
 
-1. Search and import the official pages for the topic.
+1. Search and import the primary sources for the topic: official docs, the book being studied, or other pages the series already treats as sources.
 2. Generate the draft from those pages only.
 3. Verify that draft against the pages passed to the generator. A control ID, API name, version, tool name, number, or absolute claim ("always", "never", "triệt để") needs a sentence on the page. Delete a claim the page does not support. Rewrite a claim the page states more narrowly. Do not recommend a tool or API the page marks as deprecated. The order and the report to the user are in the "Verify" step of `AGENTS.md`.
 4. Rewrite the surviving claims so a later reading explains the mechanism. Do not add a fact in that rewrite, and do not leave the verification notes in the article.

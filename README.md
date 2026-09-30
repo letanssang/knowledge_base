@@ -56,6 +56,14 @@ Chưa có bài.
 
 [System Design](./articles/system-design/README.md)
 
+## Thinking in Systems
+
+Đọc *Thinking in Systems* của Donella Meadows: cấu trúc hệ thống, feedback, bẫy, và chỗ can thiệp.
+
+Chưa có bài.
+
+[Thinking in Systems](./articles/thinking-in-systems/README.md)
+
 ## NotebookLM
 
 Mỗi series được soạn từ một notebook NotebookLM riêng. Đăng nhập một lần trên máy này:
