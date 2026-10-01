@@ -60,9 +60,13 @@ Chưa có bài.
 
 Đọc *Thinking in Systems* của Donella Meadows: cấu trúc hệ thống, feedback, bẫy, và chỗ can thiệp.
 
-Chưa có bài.
-
 [Thinking in Systems](./articles/thinking-in-systems/README.md)
+
+## Business Dynamics
+
+Đọc *Business Dynamics* của John D. Sterman: mô hình hóa động học, Causal Loop Diagrams, Stock & Flow, khuếch tán Bass, và chuỗi cung ứng.
+
+[Business Dynamics](./articles/business-dynamics/README.md)
 
 ## NotebookLM
 
