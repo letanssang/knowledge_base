@@ -14,6 +14,18 @@ Enterprise Integration Patterns (EIP) và tích hợp hệ thống với Apache 
 
 [Apache Camel](./articles/apache-camel/README.md)
 
+## HTML & CSS Basic
+
+Nền tảng xây dựng giao diện web: cấu trúc semantic HTML, form, box model, CSS positioning, Flexbox, Grid và tư duy responsive mobile-first.
+
+[HTML & CSS Basic](./articles/html-css-basic/README.md)
+
+## Angular Basic
+
+Nhập môn phát triển ứng dụng web với Angular hiện đại: tư duy component, data binding, control flow, tương tác giữa các component, và xây dựng ứng dụng cơ bản.
+
+[Angular Basic](./articles/angular-basic/README.md)
+
 ## Flutter
 
 Phát triển ứng dụng Flutter.
