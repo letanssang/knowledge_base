@@ -20,91 +20,161 @@ language: vi
 
 # Đơn vị đo, Typography và Màu sắc trong CSS
 
-Hãy hình dung một tình huống phổ biến trong thực tế: một người dùng lớn tuổi truy cập vào trang web của bạn. Để dễ đọc hơn, họ vào phần cài đặt của trình duyệt và tăng kích thước chữ mặc định từ 16px lên 24px. Nhưng nếu bạn đã cố định toàn bộ kích thước bằng đơn vị tuyệt đối `px`, trang web sẽ không hề phản hồi: cỡ chữ vẫn giữ nguyên kích thước nhỏ, gây khó khăn cho người đọc.
+Hãy hình dung một tình huống thực tế rất phổ biến: một người dùng lớn tuổi truy cập vào trang web của bạn. Vì mắt kém, họ vào phần Cài đặt của trình duyệt và tăng kích cỡ chữ mặc định từ 16px lên 24px để dễ đọc. Nhưng nếu bạn đã lập trình cố định toàn bộ giao diện bằng đơn vị pixel tuyệt đối (`px`), trang web sẽ "trơ như đá": cỡ chữ vẫn giữ nguyên kích thước nhỏ xíu, phá hỏng hoàn toàn trải nghiệm tiếp cận.
 
-Cùng lúc đó, khi cần tạo hiệu ứng đổi màu tối hơn một chút lúc di chuột qua nút bấm (hover state), nếu đang dùng mã HEX như `#3b82f6`, bạn sẽ rất khó tính toán thủ công xem cần giảm bao nhiêu giá trị ở từng cặp ký tự đại diện cho kênh màu đỏ, xanh lá hay xanh dương.
+Cùng lúc đó, khi cần tạo hiệu ứng đổi màu tối hơn một chút lúc di chuột qua nút bấm (Hover state), nếu bạn dùng mã màu HEX như `#3b82f6`, bạn sẽ không biết phải tăng giảm bao nhiêu ở từng cặp ký tự số và chữ thập lục phân để màu trông tự nhiên.
 
-Cả hai vấn đề này đều bắt nguồn từ việc lựa chọn chưa phù hợp giữa **Hệ thống đơn vị đo lường** và **Hệ màu sắc** trong CSS.
+Cả hai bài toán này đều được giải quyết gọn gàng nếu bạn nắm vững **Hệ thống đơn vị tương đối** và **Hệ màu sắc HSL** trong CSS.
 
-## Hệ thống đơn vị đo lường: Tuyệt đối vs Tương đối
+---
 
-Theo quy chuẩn W3C, các đơn vị đo độ dài trong CSS được chia thành hai nhóm:
+## 1. Hệ thống đơn vị đo lường: Tuyệt đối vs Tương đối
 
-### 1. Đơn vị tuyệt đối (Absolute Lengths)
-Bao gồm `px`, `cm`, `mm`, `in`, `pt`, `pc`. Trong đó, `px` (pixel hiển thị) là đơn vị chuẩn (canonical unit) được neo cố định theo tỷ lệ:
+Theo đặc tả W3C, đơn vị đo độ dài trong CSS được chia làm 2 trường phái:
 
-$$1\text{px} = \frac{1}{96}\text{ inch}$$
-
-Đơn vị tuyệt đối có ưu điểm là cố định và dễ hình dung. Tuy nhiên, nhược điểm lớn nhất là nó không thể tự động co giãn theo thiết lập trợ năng (accessibility preferences) của người dùng hoặc các môi trường hiển thị khác nhau.
-
-### 2. Đơn vị tương đối (Relative Lengths)
-Các đơn vị tương đối được tính toán dựa trên một giá trị tham chiếu động:
-- **`%`**: Tỷ lệ phần trăm tính theo kích thước phần tử cha hoặc kích thước hộp chứa.
-- **`vw` / `vh`**: 1% chiều rộng (`viewport width`) và 1% chiều cao (`viewport height`) của cửa sổ trình duyệt. Hiện nay CSS hiện đại còn bổ sung các biến thể như `dvh` (Dynamic Viewport Height) để xử lý mượt mà khi thanh địa chỉ trên trình duyệt di động ẩn hiện.
-- **`em`**: Bằng kích thước font chữ (`font-size`) được tính toán của **chính phần tử đó** (hoặc phần tử cha gần nhất).
-- **`rem` (root em)**: Luôn tham chiếu trực tiếp đến kích thước font chữ của **phần tử gốc (`<html>`)**.
-
-Theo mặc định của hầu hết trình duyệt, kích thước font ở thẻ gốc là 16px. Do đó, $1\text{rem} = 16\text{px}$.
-
-### Tại sao nên ưu tiên `rem`?
-Khi người dùng tăng kích thước font mặc định của trình duyệt lên 24px, giá trị tại phần tử gốc sẽ chuyển thành 24px. Toàn bộ các phần tử sử dụng `rem` (ví dụ `font-size: 1.5rem`, `padding: 1rem`) sẽ tự động phóng to tương ứng mà không làm vỡ tỷ lệ bố cục, giúp trang web đạt chuẩn tiếp cận cao nhất.
-
-## Typography cốt lõi và Bí mật của `line-height`
-
-Typography trong CSS xoay quanh các thuộc tính định hình văn bản:
-- **`font-family`**: Khai báo danh sách font chữ ưu tiên theo thứ tự fallback, kết thúc bằng một họ font chung (`"Inter", system-ui, -apple-system, sans-serif`).
-- **`font-size`**: Kích thước chữ (nên dùng `rem`).
-- **`font-weight`**: Độ đậm của nét chữ (từ 100 đến 900, phổ biến là 400 cho Normal và 700 cho Bold).
-- **`line-height`**: Chiều cao của dòng văn bản.
-
-### Lưu ý quan trọng với `line-height`: Hãy dùng số không đơn vị!
-Thuộc tính `line-height` có thể nhận giá trị có đơn vị (`line-height: 24px`, `1.5em`) hoặc một hệ số tỷ lệ không đơn vị (`line-height: 1.5`):
-
-```css
-/* NÊN DÙNG: Số không đơn vị */
-body {
-  font-size: 1rem;
-  line-height: 1.5;
-}
+```text
+┌───────────────────────────────────────┬───────────────────────────────────────┐
+│     ĐƠN VỊ TUYỆT ĐỐI (Absolute)       │      ĐƠN VỊ TƯƠNG ĐỐI (Relative)      │
+├───────────────────────────────────────┼───────────────────────────────────────┤
+│ • Đại diện: px (pixel hiển thị)       │ • Đại diện: rem, em, %, vh, vw        │
+│ • Cố định cứng ngắc, không co giãn    │ • Tự động co giãn theo tham chiếu     │
+│ • Không phản hồi theo cài đặt trợ năng│ • Tối ưu hoàn hảo cho Responsive & a11y│
+└───────────────────────────────────────┴───────────────────────────────────────┘
 ```
 
-Khi dùng hệ số không đơn vị (`1.5`), mỗi phần tử con bên trong sẽ lấy chính kích thước font chữ của nó nhân với 1.5. Nếu bạn dùng đơn vị cố định hoặc `em` trên thẻ cha, giá trị chiều cao dòng tuyệt đối đã tính từ cha sẽ truyền xuống con, khiến các tiêu đề `<h1>` có cỡ chữ lớn bị dính chữ hoặc đè chữ lên nhau.
+### A. Sự khác biệt sống còn: `px` vs `rem` vs `em`
 
-## Hệ màu sắc trong CSS: Sức mạnh của HSL
+* **`px` (Pixel)**: Đại diện cho 1 điểm ảnh trên màn hình ($1\text{px} = 1/96\text{ inch}$). Dù người dùng có phóng to cỡ chữ của trình duyệt, `16px` vẫn vĩnh viễn là `16px`.
+* **`rem` (Root em)**: Luôn tham chiếu trực tiếp đến kích thước font chữ của **phần tử gốc (`<html>`)**.
+  * Mặc định ở hầu hết mọi trình duyệt: font gốc của thẻ `<html>` là **`16px`**.
+  * Do đó: $1\text{rem} = 16\text{px}$, $1.5\text{rem} = 24\text{px}$, $2\text{rem} = 32\text{px}$.
+  * Nếu người dùng lớn tuổi tăng font trình duyệt lên **`20px`**, thì $1\text{rem}$ lập tức tự động chuyển thành **`20px`** và toàn bộ giao diện phóng to mượt mà!
 
-CSS hỗ trợ nhiều cách khai báo màu sắc:
-1. **Từ khóa màu**: `red`, `blue`, `transparent` (thường chỉ dùng khi test nhanh).
-2. **Mã HEX**: `#1a73e8` (kết hợp các giá trị Hexadecimal của 3 kênh Red, Green, Blue).
-3. **RGB / RGBA**: `rgb(26, 115, 232)` hoặc `rgba(26, 115, 232, 0.8)` (bổ sung kênh Alpha điều chỉnh độ trong suốt từ 0 đến 1).
-4. **HSL / HSLA**: `hsl(hue, saturation%, lightness%)`.
+```text
+Cài đặt trình duyệt: 16px ──► 1rem = 16px ──► font-size: 2rem = 32px
+Cài đặt đổi thành:  20px ──► 1rem = 20px ──► font-size: 2rem = 40px (Tự động co giãn!)
+```
 
-Trong thiết kế giao diện, **HSL** là định dạng trực quan và linh hoạt nhất:
-- **Hue (Sắc độ)**: Là một góc từ $0^\circ$ đến $360^\circ$ trên vòng tròn màu (0 là Đỏ, 120 là Xanh lá, 240 là Xanh dương).
-- **Saturation (Độ bão hòa)**: Từ 0% (xám xịt) đến 100% (màu rực rỡ).
-- **Lightness (Độ sáng)**: Từ 0% (đen hoàn toàn), 50% (màu chuẩn), đến 100% (trắng hoàn toàn).
+* **`em` (Element em)**: Tham chiếu đến kích thước font của **chính phần tử đó** hoặc **phần tử cha gần nhất**.
 
-Nhờ tách riêng tham số Lightness thành một tỷ lệ phần trăm độc lập, việc tạo các biến thể màu trở nên vô cùng đơn giản:
+> [!WARNING]
+> ### Cạm bẫy "Lồng nhau cấp số nhân" của `em`
+> Nếu bạn dùng `em` cho font-size ở các danh sách menu lồng nhau:
+> ```html
+> <ul>           <!-- font-size: 1.5em (24px) -->
+>   <li>
+>     <ul>         <!-- font-size: 1.5em của 24px = 36px! -->
+>       <li>
+>         <ul>     <!-- font-size: 1.5em của 36px = 54px!! Chữ phình to khổng lồ -->
+> ```
+> Vì hiện tượng nhân dồn này, **quy tắc hiện đại là**:
+> * Dùng **`rem`** cho hầu hết mọi kích thước (`font-size`, `margin`, `padding`, `width`).
+> * Dùng **`em`** khi muốn một thuộc tính phụ (như `padding` bên trong nút bấm) tự động to nhỏ theo đúng cỡ chữ của nút đó.
+> * Dùng **`px`** cho đường viền siêu mỏng (`border: 1px solid ...`) hoặc bóng đổ (`box-shadow`), nơi cần giữ độ sắc nét cố định theo điểm ảnh.
+
+---
+
+## 2. Typography và Bí mật của `line-height`
+
+Typography là nghệ thuật sắp đặt chữ viết để nội dung dễ đọc và truyền tải đúng cảm xúc:
+
+* **`font-family`**: Khai báo danh sách font chữ dự phòng (fallback font):
+  ```css
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  ```
+  *(Nếu máy người dùng không có font Inter, trình duyệt sẽ tự động lấy font hệ thống của Apple/Windows thay thế).*
+* **`font-size`**: Cỡ chữ (ưu tiên dùng đơn vị `rem`).
+* **`font-weight`**: Độ đậm nét của chữ (từ `100` đến `900`, phổ biến là `400` cho chữ thường và `700` cho chữ đậm).
+* **`line-height`**: Khoảng cách chiều cao giữa các dòng chữ trong một đoạn văn.
+
+```text
+┌──────────────────────────────────────────────┐
+│ Dòng chữ thứ nhất trên trang web...          │ ─┐
+│                                              │  ├─ line-height (chiều cao dòng)
+│ Dòng chữ thứ hai tiếp nối ngay sau đó...     │ ─┘
+└──────────────────────────────────────────────┘
+```
+
+> [!TIP]
+> ### Luôn dùng số KHÔNG ĐƠN VỊ cho `line-height`
+> Tuyệt đối tránh viết `line-height: 24px` hay `line-height: 1.5em` trên thẻ cha (`<body>`).
+> * **Hãy luôn viết**: `line-height: 1.5;` hoặc `line-height: 1.6;` (số thực không kèm đơn vị).
+> * **Vì sao?** Khi không có đơn vị, mỗi phần tử con sẽ lấy chính `font-size` của nó nhân với `1.5`. Nếu bạn dùng đơn vị cố định trên `<body>`, thẻ tiêu đề `<h1>` với cỡ chữ to đùng sẽ bị kế thừa khoảng cách dòng nhỏ của thẻ con, dẫn đến các dòng chữ bị **đè dính lên nhau như bánh kẹp**!
+
+---
+
+## 3. Hệ màu sắc trong CSS: Vì sao HSL là vũ khí tối thượng?
+
+CSS hỗ trợ 4 cách định nghĩa màu sắc phổ biến:
+
+1. **Từ khóa màu**: `red`, `blue`, `papayawhip` (chỉ dùng test nhanh).
+2. **Mã HEX**: `#3b82f6` (mã màu thập lục phân 6 ký tự kết hợp 3 kênh Red, Green, Blue).
+3. **RGB / RGBA**: `rgb(59, 130, 246)` hoặc `rgba(59, 130, 246, 0.8)` (có thêm kênh Alpha chỉnh độ trong suốt từ 0 đến 1).
+4. **HSL**: `hsl(hue, saturation%, lightness%)`.
+
+### Sức mạnh của HSL đối với Lập trình viên & Designer
+
+Mã HEX hay RGB được máy tính đọc rất nhanh, nhưng con người nhìn vào chuỗi `#3b82f6` thì không thể đoán được làm sao để tạo ra một màu xanh nhạt hơn hoặc đậm hơn. 
+
+**HSL** mô phỏng chính xác cách mắt người cảm nhận màu sắc thông qua 3 thông số:
+
+```text
+         90° (Vàng chanh)
+   120° (Xanh lá)      60° (Vàng)
+           \        /
+180° (Cyan) ── ● ── 0° / 360° (Đỏ)
+           /        \
+  240° (Xanh dương)   300° (Tím hồng)
+```
+
+1. **Hue (Sắc độ màu)**: Là một góc quay từ $0^\circ$ đến $360^\circ$ trên vòng tròn màu.
+   * `0` = Đỏ, `120` = Xanh lá, `240` = Xanh dương.
+2. **Saturation (Độ bão hòa/Đậm đà)**: Từ $0\%$ (màu xám xịt) đến $100\%$ (màu rực rỡ nhất).
+3. **Lightness (Độ sáng)**:
+   * $0\%$ = Đen hoàn toàn.
+   * $50\%$ = Màu chuẩn nguyên bản.
+   * $100\%$ = Trắng hoàn toàn.
+
+### Ứng dụng đỉnh cao: Tạo bảng màu chỉ bằng 1 con số
+
+Khi làm nút bấm, bạn chỉ cần giữ nguyên góc màu **Hue (215)** và độ đậm **Saturation (90%)**, sau đó **chỉ cần thay đổi tham số Lightness**:
 
 ```css
 .button {
-  background-color: hsl(215, 90%, 50%); /* Màu xanh chuẩn */
+  background-color: hsl(215, 90%, 50%); /* Màu chuẩn (50% Lightness) */
 }
 
 .button:hover {
-  background-color: hsl(215, 90%, 40%); /* Giảm độ sáng để màu tối hơn khi hover */
+  background-color: hsl(215, 90%, 40%); /* Tối hơn 10% khi di chuột vào */
+}
+
+.button:active {
+  background-color: hsl(215, 90%, 30%); /* Tối hơn 20% khi nhấn chuột xuống */
+}
+
+.button-disabled {
+  background-color: hsl(215, 20%, 80%); /* Giảm Saturation để màu nhạt đi */
 }
 ```
 
-## Ứng dụng thực tế
+Đây chính là nguyên lý mà các Design System hiện đại (như Tailwind CSS hay Material Design) dùng để tự động sinh ra các dải màu từ 100 đến 900!
 
-- Dùng **`rem`** cho `font-size`, `margin`, `padding` để toàn bộ giao diện tự động co giãn theo thiết lập font của trình duyệt.
-- Dùng **`px`** cho các đường viền mỏng (`border: 1px solid ...`) hoặc bóng đổ nhỏ (`box-shadow`), nơi mà kích thước cần giữ độ sắc nét cố định ở cấp độ điểm ảnh.
-- Luôn đặt **`line-height`** dưới dạng số không đơn vị (ví dụ 1.5 đến 1.6 cho văn bản đọc).
-- Tận dụng hệ màu **HSL** kết hợp với CSS Variables để xây dựng bảng màu giao diện và chế độ sáng/tối (Dark Mode) dễ dàng hơn.
+---
+
+## 4. Tổng kết
+
+* **Đơn vị**: Ưu tiên dùng **`rem`** cho bố cục và cỡ chữ để hỗ trợ co giãn trợ năng. Chỉ dùng **`px`** cho đường viền mỏng.
+* **Typography**: Luôn khai báo **`line-height` bằng số không đơn vị** (ví dụ: `1.5`) để tránh lỗi đè chữ.
+* **Màu sắc**: Nắm vững **HSL** để tự tay biến hóa các biến thể màu sáng/tối một cách khoa học mà không cần dùng đến Photoshop hay Figma.
+
+---
 
 ## References
 
 - [CSS Values and Units Module Level 4 • W3C](https://www.w3.org/TR/css-values-4/)
+- [CSS Color Module Level 4 • W3C](https://www.w3.org/TR/css-color-4/)
+
+---
 
 ## Series
 

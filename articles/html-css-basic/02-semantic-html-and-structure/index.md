@@ -41,24 +41,62 @@ Khi mở tệp mã nguồn của một trang web, bạn có thể dễ dàng b�
 </div>
 ```
 
-Trên màn hình trình duyệt, sự kết hợp với CSS vẫn giúp giao diện hiển thị vô cùng đẹp mắt và gọn gàng. Tuy nhiên, đằng sau vẻ ngoài chỉn chu đó, trình duyệt, các cỗ máy tìm kiếm và trình đọc màn hình dành cho người khiếm thị lại chỉ nhìn thấy một mê cung thẻ vô danh—thường được gọi trong giới kỹ thuật là hiện tượng **"div soup"**.
+Trên màn hình trình duyệt, sự kết hợp với CSS vẫn giúp giao diện hiển thị vô cùng đẹp mắt và gọn gàng. Tuy nhiên, đằng sau vẻ ngoài chỉn chu đó, trình duyệt, các cỗ máy tìm kiếm (Googlebot) và trình đọc màn hình (Screen Reader cho người khiếm thị) lại chỉ nhìn thấy một mê cung thẻ vô danh—thường được gọi trong giới kỹ thuật là hiện tượng **"div soup"** (canh hẹ thẻ div).
 
-Vấn đề trung tâm nằm ở chỗ: thẻ `<div>` chỉ là một phần tử chứa trung tính thuần túy, hoàn toàn không mang bất kỳ ý nghĩa ngữ nghĩa (semantics) nào về mặt nội dung. Khi toàn bộ cấu trúc trang bị phụ thuộc vào thẻ `<div>`, các công cụ tự động sẽ không thể phân biệt đâu là thanh điều hướng chính, đâu là phần bài viết quan trọng hay đâu chỉ là thông tin bản quyền ở chân trang. Việc hiểu rõ cơ chế của Semantic HTML chính là chìa khóa giúp chúng ta xây dựng những trang web vừa chuẩn mực về mặt kỹ thuật, vừa thân thiện với mọi đối tượng người dùng.
+Vấn đề cốt lõi nằm ở chỗ: thẻ `<div>` chỉ là một **khung chứa trung tính thuần túy**, hoàn toàn không mang bất kỳ ý nghĩa ngữ nghĩa (semantics) nào về mặt nội dung. Khi toàn bộ cấu trúc trang bị phụ thuộc vào thẻ `<div>`, các công cụ tự động sẽ không thể phân biệt đâu là thanh điều hướng chính, đâu là phần bài viết quan trọng hay đâu chỉ là thông tin bản quyền ở chân trang. 
 
-## Ý nghĩa ngữ nghĩa và cơ chế vận hành bên dưới
+Việc hiểu rõ cơ chế của **Semantic HTML** chính là chìa khóa giúp chúng ta xây dựng những trang web chuẩn mực về kỹ thuật, tối ưu SEO và thân thiện với khả năng tiếp cận (Accessibility - a11y).
 
-Mã HTML (HyperText Markup Language) về bản chất là một ngôn ngữ đánh dấu được dùng để bao bọc và xác định cấu trúc cho các thành phần nội dung trên trang web. Khi chúng ta bọc một đoạn văn bản vào thẻ thích hợp, chúng ta không chỉ yêu cầu trình duyệt hiển thị nội dung đó mà còn gán cho nó một vai trò chức năng cụ thể trong tài liệu. 
+---
 
-Một thẻ HTML chuẩn mực bao gồm thẻ mở, phần nội dung bên trong và thẻ đóng để phân định ranh giới phần tử. Bên cạnh đó, các thuộc tính mở rộng như `lang` hay `alt` cung cấp thêm thông tin bổ trợ vô cùng giá trị cho máy móc:
+## 1. Bản chất của Semantic HTML là gì?
 
-- Khi thẻ gốc `<html>` được khai báo thuộc tính ngôn ngữ `lang="vi"`, công cụ tổng hợp giọng nói (speech synthesis) và trình đọc màn hình (screen reader) sẽ biết chính xác bộ phát âm tiếng Việt cần áp dụng thay vì đọc bằng ngữ điệu tiếng Anh.
-- Thuộc tính `alt` trong thẻ ảnh `<img>` giúp trình đọc màn hình diễn giải nội dung bức ảnh cho người khiếm thị, đồng thời giúp bot tìm kiếm hiểu được ngữ cảnh của hình ảnh.
+HTML (HyperText Markup Language) không chỉ dùng để hiển thị chữ to chữ nhỏ. Khi bọc một đoạn văn bản vào một thẻ ngữ nghĩa thích hợp, bạn đang **gán cho nó một vai trò chức năng cụ thể trong tài liệu**:
 
-Từng phần tử có ngữ nghĩa rõ ràng sẽ đóng vai trò làm cột mốc định vị cấu trúc, giúp các thiết bị tự động duyệt qua trang web một cách chính xác và hiệu quả.
+* Thẻ `<p>` nói với máy móc: *"Đây là một đoạn văn bản thông thường."*
+* Thẻ `<nav>` nói với máy móc: *"Đây là thanh điều hướng chính của trang."*
+* Thẻ `<button>` nói với máy móc: *"Đây là nút bấm có thể nhấp chuột hoặc kích hoạt bằng phím Enter/Space."*
 
-## Chuyển đổi từ "div soup" sang cấu trúc Semantic HTML chuẩn mực
+Ngoài tên thẻ, các thuộc tính mở rộng cũng mang lại giá trị rất lớn cho các công cụ tự động:
+* `lang="vi"` trong thẻ `<html>`: Giúp công cụ tổng hợp giọng nói và trình đọc màn hình biết chính xác bộ phát âm tiếng Việt cần áp dụng thay vì đọc theo ngữ điệu tiếng Anh.
+* `alt="Biểu đồ doanh thu quý 3"` trong thẻ `<img>`: Giúp người khiếm thị "nghe" được nội dung bức ảnh, đồng thời giúp bot tìm kiếm Google hiểu được ngữ cảnh hình ảnh để xếp hạng SEO.
 
-Để hình dung rõ sự khác biệt, hãy cùng theo dõi quá trình tái cấu trúc đoạn mã trên sang cấu trúc Semantic HTML chuẩn hóa:
+---
+
+## 2. Bố cục tổng thể của một trang web Semantic chuẩn mực
+
+Dưới đây là sơ đồ "bộ xương" chuẩn hóa của một trang web hiện đại sử dụng Semantic HTML:
+
+```text
+┌────────────────────────────────────────────────────────────┐
+│                        <header>                            │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │                       <nav>                          │  │
+│  │   [Trang chủ]   [Bài viết]   [Dịch vụ]   [Liên hệ]   │  │
+│  └──────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────┬────────────────┐
+│                  <main>                   │    <aside>     │
+│                                           │                │
+│  ┌─────────────────────────────────────┐  │  Thanh bên     │
+│  │              <article>              │  │  (Sidebar)     │
+│  │  <h1>Tiêu đề bài viết</h1>          │  │                │
+│  │                                     │  │  • Tin tức phụ │
+│  │  ┌───────────────────────────────┐  │  │  • Quảng cáo   │
+│  │  │           <section>           │  │  │  • Tác giả     │
+│  │  │  <h2>Phần 1: Giới thiệu</h2>  │  │  │                │
+│  │  └───────────────────────────────┘  │  │                │
+│  └─────────────────────────────────────┘  │                │
+└───────────────────────────────────────────┴────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│                        <footer>                            │
+│  © 2026 Bản quyền thuộc về My Site • Điều khoản sử dụng    │
+└────────────────────────────────────────────────────────────┘
+```
+
+### Chuyển đổi mã nguồn thực tế
+
+Hãy so sánh đoạn mã "div soup" ở đầu bài khi được chuyển đổi sang mã ngữ nghĩa:
 
 ```html
 <header>
@@ -83,38 +121,59 @@ Từng phần tử có ngữ nghĩa rõ ràng sẽ đóng vai trò làm cột m�
 </footer>
 ```
 
-Trong cấu trúc ngữ nghĩa này:
-- Thẻ `<header>` đại diện cho nhóm phần tử giới thiệu hoặc điều hướng mở đầu của trang web.
-- Thẻ `<nav>` khoanh vùng các liên kết điều hướng chính, giúp trình đọc màn hình cung cấp phím tắt cho phép người dùng nhảy nhanh qua menu mà không cần đọc từng liên kết một.
-- Thẻ `<main>` đánh dấu vùng nội dung trọng tâm và độc nhất của tài liệu. Mỗi trang web chỉ nên có một phần tử `<main>` hiển thị trực tiếp.
-- Thẻ `<article>` bọc khối nội dung độc lập, có thể tự đứng vững và phát hành lại ở một nơi khác (như một bài báo, một bài đăng blog hay một bình luận của người dùng).
-- Thẻ `<section>` đại diện cho một phân đoạn chuyên đề trong tài liệu, thường có tiêu đề riêng (`<h2>`–`<h6>`).
-- Thẻ `<aside>` chứa thông tin phụ trợ, liên quan gián tiếp đến nội dung chính (như thanh bên sidebar, danh mục gợi ý, hoặc trích dẫn).
-- Thẻ `<footer>` đánh dấu chân trang, chứa thông tin tác giả, bản quyền, liên kết điều khoản hoặc thông tin liên hệ.
+### Ý nghĩa của từng thẻ ngữ nghĩa cốt lõi:
 
-## Cạm bẫy thường gặp khi áp dụng Semantic HTML
+* **`<header>`**: Đại diện cho nhóm phần tử mở đầu của trang web hoặc của một phân đoạn (thường chứa logo, thanh tìm kiếm hoặc tiêu đề bài viết).
+* **`<nav>`**: Khoanh vùng các liên kết điều hướng quan trọng. Trình đọc màn hình sẽ cung cấp phím tắt cho người khiếm thị nhảy thẳng qua danh sách menu này mà không cần phải bấm nghe từng liên kết một.
+* **`<main>`**: Đánh dấu vùng **nội dung trọng tâm và duy nhất** của tài liệu. Mỗi trang web chỉ nên có một phần tử `<main>` hiển thị trực tiếp.
+* **`<article>`**: Bọc một khối nội dung **độc lập**, có thể tách rời và tái sử dụng ở nơi khác (như một bài báo, một bài đăng blog, hoặc một bình luận).
+* **`<section>`**: Đại diện cho một **phân đoạn chuyên đề** trong tài liệu (thường cần có tiêu đề `<h2>`–`<h6>` đi kèm).
+* **`<aside>`**: Chứa nội dung phụ trợ, liên quan gián tiếp đến nội dung chính (thanh bên sidebar, mục bài viết liên quan, quảng cáo).
+* **`<footer>`**: Chân trang, chứa thông tin tác giả, bản quyền, liên kết điều khoản hoặc thông tin liên hệ.
 
-Mặc dù Semantic HTML mang lại lợi ích lớn về SEO và khả năng truy cập (accessibility), lập trình viên vẫn rất dễ mắc một số sai lầm:
+---
 
-### 1. Lạm dụng thẻ `<section>` và `<article>` để thay thế mọi `<div>`
-Thẻ `<section>` không phải là một chiếc thẻ `<div>` cao cấp hơn. Chuẩn W3C quy định `<section>` là một phân đoạn theo chủ đề nội dung và thông thường cần có một thẻ tiêu đề đi kèm. Nếu một phần tử bọc bên ngoài chỉ đơn thuần đóng vai trò làm khung chứa để phục vụ việc căn chỉnh CSS, tạo khoảng cách hay dàn layout Flexbox, việc sử dụng thẻ `<div>` trung tính vẫn là giải pháp hoàn toàn chính xác.
+## 3. Phân biệt kinh điển: `<article>` vs `<section>`
 
-### 2. Dùng sai phạm vi của `<main>`
-Thẻ `<main>` không được dùng để chứa các thành phần lặp đi lặp lại xuyên suốt toàn bộ website như thanh menu chung, banner quảng cáo đầu trang hay chân trang bản quyền.
+Rất nhiều lập trình viên băn khoăn khi nào nên dùng `<article>` và khi nào dùng `<section>`. Có một bài kiểm tra tư duy rất đơn giản:
 
-### 3. Nhảy cóc cấp độ tiêu đề (`<h1>`–`<h6>`)
-Thứ tự các cấp độ tiêu đề phản ánh cây cấu trúc phác thảo (outline) của tài liệu. Việc chọn thẻ tiêu đề dựa trên kích thước font chữ (chẳng hạn dùng `<h4>` thay vì `<h2>` chỉ vì muốn chữ nhỏ hơn) sẽ phá vỡ cấu trúc tài liệu. Việc định dạng kích thước hiển thị thuộc về trách nhiệm của CSS.
+> **Quy tắc trích xuất độc lập (The Syndication Test):**
+> * Nếu bạn cắt khối nội dung đó ra và mang sang một trang web khác (hoặc đưa vào bảng tin RSS) mà **người đọc vẫn hiểu trọn vẹn ý nghĩa của nó** mà không cần đọc phần còn lại của trang $\rightarrow$ Dùng **`<article>`** (ví dụ: bài post Facebook, bài báo, card sản phẩm).
+> * Nếu khối nội dung đó chỉ là **một phần, một chương hoặc một giai đoạn** trong tổng thể tài liệu $\rightarrow$ Dùng **`<section>`** (ví dụ: phần "Giới thiệu", phần "Bảng giá", phần "Liên hệ").
 
-## Ứng dụng thực tế
+---
 
-Semantic HTML không phải là lý thuyết khô khan, mà là tư duy tổ chức dữ liệu có cấu trúc. Việc lựa chọn đúng thẻ ngữ nghĩa ngay từ đầu giúp mã nguồn trong sáng, dễ đọc và dễ bảo trì hơn cho các thành viên trong nhóm phát triển. 
+## 4. Ba cạm bẫy thường gặp khi áp dụng Semantic HTML
 
-Quan trọng hơn, khi bạn bước sang học các framework như Angular, toàn bộ kiến trúc Component và Accessibility (ARIA landmarks) đều dựa trên nền tảng hiểu biết vững chắc về Semantic HTML.
+### Cạm bẫy 1: Cực đoan hóa — Lạm dụng `<section>` và `<article>` để thay thế mọi `<div>`
+Thẻ `<section>` không phải là một chiếc thẻ `<div>` "cao cấp hơn". Chuẩn WHATWG quy định `<section>` là một phân đoạn theo chủ đề nội dung. 
+* **Quy tắc đúng**: Nếu một phần tử bọc ngoài chỉ đơn thuần phục vụ mục đích dàn layout CSS (như tạo khung Flexbox, tạo khoảng cách margin/padding), việc sử dụng thẻ `<div>` trung tính là **hoàn toàn chính xác và khuyến khích**.
+
+### Cạm bẫy 2: Dùng sai phạm vi của `<main>`
+Thẻ `<main>` chỉ dành cho nội dung độc nhất của trang đó. Tuyệt đối không nhét các thành phần lặp đi lặp lại ở mọi trang (như thanh menu chung, banner quảng cáo đầu trang hay bản quyền chân trang) vào trong thẻ `<main>`.
+
+### Cạm bẫy 3: Nhảy cóc cấp độ tiêu đề (`<h1>`–`<h6>`)
+Thứ tự các cấp độ tiêu đề phản ánh cây phác thảo phân cấp (document outline) của tài liệu:
+* Mỗi trang nên có duy nhất **một** thẻ `<h1>` đại diện cho chủ đề chính.
+* Dưới `<h1>` là các `<h2>`, dưới `<h2>` là các `<h3>`.
+* **Sai lầm phổ biến**: Chọn thẻ tiêu đề chỉ vì kích thước hiển thị mặc định (ví dụ: dùng `<h4>` thay vì `<h2>` chỉ vì muốn chữ nhỏ hơn). Kích thước hiển thị là việc của CSS; hãy chọn thẻ HTML dựa trên cấu trúc phân cấp nội dung.
+
+---
+
+## 5. Tổng kết
+
+* **Semantic HTML** biến trang web từ một mớ ký tự vô danh thành một tài liệu có cấu trúc logic rõ ràng.
+* Giúp tối ưu SEO tự nhiên (Google hiểu chính xác nội dung quan trọng) và hỗ trợ khả năng tiếp cận (Accessibility - a11y).
+* Hãy dùng đúng vai trò: Dùng thẻ ngữ nghĩa cho cấu trúc nội dung, và dùng thẻ `<div>`/`<span>` trung tính cho việc căn chỉnh giao diện CSS.
+
+---
 
 ## References
 
-- [The basics of HTML • W3C Wiki](https://www.w3.org/wiki/The_basics_of_HTML)
-- [HTML 5.2: Semantics, structure, and APIs of HTML documents • W3C](https://www.w3.org/TR/html52/semantics.html)
+- [HTML Standard — Sections and Grouping Content • WHATWG](https://html.spec.whatwg.org/multipage/sections.html)
+- [HTML elements reference • MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+
+---
 
 ## Series
 

@@ -40,13 +40,20 @@ notebooklm research status -n <id> --run-id <task_id> --json
 
 Pass `--run-id` from the start response. Without it, status fails once the notebook has more than one research run.
 
-Use `--mode deep` only when the user asks for deep research. Do not run `research wait --cited-only`. That flag requires `--import-all`, and `--import-all` imports every hit, including blogs. Import a hit only when its host is one of:
+Use `--mode deep` only when the user asks for deep research. Do not run `research wait --cited-only`. That flag requires `--import-all`, and `--import-all` imports every hit, including blogs.
 
-- `mas.owasp.org`, `owasp.org`
-- `developer.android.com`, `developer.apple.com`, `support.apple.com`
-- `nvlpubs.nist.gov`, `csrc.nist.gov`
-- `datatracker.ietf.org`, `www.rfc-editor.org`
-- `openid.net`, `www.w3.org`
+Import a research hit only when it satisfies two core principles:
+
+1. **Authoritative & Primary Sources:**
+   - Prioritize primary documentation directly from standards bodies, dedicated organizations, original authors, or official platform portals.
+   - Avoid secondary roundups, personal blogs, Q&A forums, or aggregator mirrors.
+   - For technical topics, authoritative hosts include: `whatwg.org`, `developer.mozilla.org`, `w3.org`, `datatracker.ietf.org`, `rfc-editor.org`, `nvlpubs.nist.gov`, `owasp.org`, `developer.apple.com`, `developer.android.com`.
+   - For other fields (books, history, science, governance): choose reputable publishers, academic institutions, official reports, or primary archival records.
+
+2. **Recency & Superseded Check:**
+   - **Reject superseded materials**: Never source from specifications, drafts, or documents that are obsolete, retired, or historical (labeled "Superseded", "Retired", "Obsolete", "Discontinued", or kept in archival directories). Always seek the latest active standard.
+   - **Identify the current governing body**: When authority or stewardship over a standard or topic shifts between bodies (e.g., WHATWG governing HTML/DOM living standards vs. W3C governing CSS/WCAG), reference the organization actively maintaining the effective standard.
+
 
 Add each kept URL with `notebooklm source add -n <id> --json <url>` and keep the returned source id. Do not delete sources unless the user asks.
 

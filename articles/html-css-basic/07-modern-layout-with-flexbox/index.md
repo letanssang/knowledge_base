@@ -20,123 +20,156 @@ language: vi
 
 # Bố cục 1 Chiều Hiện đại với CSS Flexbox
 
-Trước khi mô hình Flexbox ra đời, việc dàn trang các thành phần web nằm ngang là một trong những thử thách gây ức chế nhất cho lập trình viên. Để xếp ba chiếc card sản phẩm nằm ngang thẳng hàng, người ta phải lạm dụng `float: left` đi kèm kỹ thuật `clear: both`, hoặc dùng `display: inline-block` nhưng phải tìm cách xóa khoảng trắng ẩn sinh ra từ các ký tự xuống dòng trong HTML.
+Trước khi Flexbox ra đời, việc xếp 3 chiếc hộp nằm ngang thẳng hàng là "cơn ác mộng" của mọi lập trình viên web. Người ta phải dùng `float: left` rồi vất vả dọn dẹp bằng kỹ thuật `clear: both`, hoặc dùng `inline-block` nhưng bị dính những khoảng trắng vô duyên sinh ra từ phím Enter trong HTML.
 
-Bố cục khối (Block) và dòng (Inline) truyền thống vốn được thiết kế cho văn bản tài liệu tĩnh, hoàn toàn thiếu đi cơ chế phân bổ khoảng trống linh hoạt theo màn hình. **CSS Flexible Box Layout (Flexbox)** xuất hiện như một cuộc cách mạng: giải phóng lập trình viên khỏi các mẹo hack rườm rà, cung cấp khả năng co giãn kích thước và căn chỉnh phần tử một cách tự nhiên.
+**CSS Flexbox (Flexible Box Layout)** xuất hiện như một phép màu giải phóng lập trình viên: chỉ với 1 dòng khai báo `display: flex`, các phần tử con lập tức tự động xếp hàng ngay ngắn, co giãn thông minh và căn chỉnh hoàn hảo trên mọi kích thước màn hình.
 
-## Tư duy Bố cục 1 Chiều và Cấu trúc Container - Item
+---
 
-Điểm mấu chốt đầu tiên cần khắc ghi: **Flexbox là mô hình bố cục một chiều (1-dimensional layout)**. 
+## 1. Tư duy cốt lõi: Bố cục 1 Chiều (1-Dimensional)
 
-Tại một thời điểm, Flexbox chỉ tính toán và dàn xếp các phần tử dọc theo duy nhất một trục: hoặc theo hàng ngang (`row`), hoặc theo cột dọc (`column`). Ngay cả khi bạn cho phép các phần tử tự động xuống dòng (`flex-wrap: wrap`), mỗi dòng mới vẫn được xử lý như một hàng đơn lẻ độc lập.
+Điểm then chốt số 1 cần ghi nhớ: **Flexbox chỉ xử lý các phần tử dọc theo DUY NHẤT MỘT TRỤC tại một thời điểm**:
+* Hoặc là xếp theo **Hàng ngang** (`row`).
+* Hoặc là xếp theo **Cột dọc** (`column`).
 
-Cấu trúc Flexbox bao gồm hai cấp độ:
-- **Flex Container**: Phần tử cha được kích hoạt bằng `display: flex` hoặc `display: inline-flex`. Ngay lập tức, nó thiết lập một ngữ cảnh định dạng flex mới (Flex Formatting Context). Các thuộc tính như `float`, `clear` và `vertical-align` trên các con trực tiếp sẽ bị vô hiệu hóa.
-- **Flex Items**: Tất cả các phần tử con trực tiếp nằm trong Flex Container.
+Mô hình Flexbox luôn gồm 2 tầng:
+1. **Flex Container (Thẻ cha)**: Được kích hoạt bằng `display: flex`. Đóng vai trò là "người nhạc trưởng" phân chia không gian.
+2. **Flex Items (Các thẻ con trực tiếp)**: Những đứa con ngoan ngoãn lắng nghe và co giãn theo sự điều phối của người cha.
 
-## Hai trục tọa độ: Trục chính (Main Axis) và Trục phụ (Cross Axis)
+---
 
-Các thuộc tính trong Flexbox không hoạt động theo khái niệm vật lý cố định (trái/phải hay trên/dưới), mà dựa trên hai trục tọa độ vuông góc:
+## 2. Bản đồ 2 Trục tọa độ: Trục chính (Main Axis) & Trục phụ (Cross Axis)
 
-1. **Trục chính (Main Axis)**: Là trục định hướng chính mà các Flex Item được xếp nối tiếp nhau, kéo dài từ `main-start` đến `main-end`. Chiều dài của item trên trục này được gọi là `main size` (chiều rộng khi xếp hàng, chiều cao khi xếp cột).
-2. **Trục phụ (Cross Axis)**: Luôn vuông góc với Trục chính, kéo dài từ `cross-start` đến `cross-end`. Kích thước đo theo trục này gọi là `cross size`.
+Đây là bí mật quan trọng nhất để làm chủ Flexbox: **Không có khái niệm "trái/phải" hay "trên/dưới" cố định, mọi thứ xoay quanh 2 trục vuông góc**:
 
-## Các thuộc tính điều khiển trên Flex Container
+```text
+Khi flex-direction: row (Mặc định xếp hàng ngang):
 
-Toàn bộ việc điều phối không gian được thiết lập thông qua các thuộc tính của thẻ cha:
-
-- **`flex-direction`**: Xác định hướng của Trục chính:
-  - `row` (mặc định): Trục chính nằm ngang, từ trái sang phải.
-  - `row-reverse`: Nằm ngang, đảo ngược từ phải sang trái.
-  - `column`: Trục chính đổi thành chiều dọc, từ trên xuống dưới.
-  - `column-reverse`: Chiều dọc, đảo ngược từ dưới lên trên.
-- **`flex-wrap`**: Điều khiển việc xuống dòng (`nowrap` ép trên 1 dòng duy nhất, `wrap` cho phép xuống dòng khi hết chỗ).
-- **`justify-content`**: Căn chỉnh và phân bổ khoảng trống còn thừa dọc theo **Trục chính (Main Axis)**:
-  - `flex-start` / `flex-end`: Dồn phần tử về đầu hoặc cuối trục.
-  - `center`: Căn giữa dọc theo trục chính.
-  - `space-between`: Đẩy phần tử đầu về mép bắt đầu, phần tử cuối về mép kết thúc, chia đều khoảng trống ở giữa.
-  - `space-around`: Chia đều khoảng trống xung quanh mỗi phần tử.
-- **`align-items`**: Căn chỉnh các phần tử dọc theo **Trục phụ (Cross Axis)**:
-  - `stretch` (mặc định): Tự động kéo giãn các phần tử cho bằng nhau và phủ kín chiều cao của dòng.
-  - `flex-start` / `flex-end` / `center`.
-- **`gap`**: Thiết lập khoảng cách cố định giữa các Flex Item mà không cần dùng đến `margin` thủ công.
-
-## Điều khiển Flex Item: Sức mạnh của `flex: 1`
-
-Điều làm nên tên gọi "Flexible" chính là khả năng tự co giãn của từng phần tử con:
-- **`flex-basis`**: Kích thước nền tảng ban đầu của item trước khi khoảng trống còn thừa được phân bổ (mặc định là `auto`).
-- **`flex-grow`**: Hệ số tăng trưởng. Mặc định là 0 (không tự phình to). Nếu đặt là 1, item sẽ hấp thụ khoảng trống thừa để mở rộng ra.
-- **`flex-shrink`**: Hệ số co hẹp. Mặc định là 1, cho phép item tự co nhỏ lại khi container bị thiếu chỗ để tránh tràn viền.
-
-### Cú pháp viết tắt `flex: 1`
-Khi bạn viết `flex: 1`, CSS sẽ tự động gán:
-
-```css
-flex: 1 1 0px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0px */
+         TRỤC CHÍNH (Main Axis) ──────────────────────────►
+     ┌────────────────────────────────────────────────────────┐
+  T  │  ┌───────────┐      ┌───────────┐      ┌───────────┐   │
+  R  │  │  Item 1   │      │  Item 2   │      │  Item 3   │   │
+  Ụ  │  └───────────┘      └───────────┘      └───────────┘   │
+  C  │                                                        │
+     │  justify-content điều khiển TRỤC CHÍNH (Chiều ngang)   │
+  P  │  align-items điều khiển TRỤC PHỤ (Chiều dọc)           │
+  H  │                                                        │
+  Ụ  │                                                        │
+  ▼  └────────────────────────────────────────────────────────┘
 ```
 
-Bằng cách đưa `flex-basis` về `0px`, trình duyệt sẽ triệt tiêu kích thước ban đầu của nội dung chữ bên trong, buộc tất cả các card có khai báo `flex: 1` phải chia đều tuyệt đối toàn bộ chiều rộng của khung chứa.
+> [!IMPORTANT]
+> ### Điểm bừng sáng tư duy: Khi xoay trục với `flex-direction: column`
+> Nếu bạn đổi `flex-direction: column` để xếp các phần tử thành hàng dọc:
+> * **Trục chính (Main Axis)** biến thành **Chiều DỌC** $\downarrow$. Lúc này `justify-content` sẽ điều khiển khoảng cách theo chiều dọc!
+> * **Trục phụ (Cross Axis)** biến thành **Chiều NGANG** $\rightarrow$. Lúc này `align-items` sẽ điều khiển căn chỉnh theo chiều ngang!
 
-## Giải quyết bài toán thực tế
+---
 
-### 1. Thanh điều hướng Navbar với kỹ thuật auto-margin
-Một bài toán kinh điển: Logo nằm bên trái, cụm menu ở giữa, và nút Đăng nhập dạt hẳn sang góc phải:
+## 3. Các thuộc tính điều phối không gian của Thẻ cha (Container)
 
-```html
-<nav class="navbar">
-  <div class="logo">MyBrand</div>
-  <ul class="nav-links">
-    <li><a href="#">Trang chủ</a></li>
-    <li><a href="#">Sản phẩm</a></li>
-  </ul>
-  <button class="login-btn">Đăng nhập</button>
-</nav>
+### A. Căn chỉnh trên Trục chính với `justify-content`
+
+```text
+flex-start    [A][B][C] . . . . . . . . . . . . (Dồn về đầu trục)
+flex-end      . . . . . . . . . . . . [A][B][C] (Dồn về cuối trục)
+center        . . . . . . [A][B][C] . . . . . . (Căn chính giữa trục)
+space-between [A] . . . . . . [B] . . . . . [C] (Đẩy dạt sang 2 mép biên)
+space-around  . . [A] . . . . [B] . . . . [C] . (Khoảng cách đều quanh mỗi item)
+space-evenly  . . . [A] . . . [B] . . . [C] . . (Khoảng cách giữa các item bằng nhau chằn chặn)
+```
+
+### B. Căn chỉnh trên Trục phụ với `align-items`
+* `stretch` (Mặc định): Tự động kéo dài các item cho **bằng nhau về chiều cao** (rất tiện để làm các Card sản phẩm đều tăm tắp).
+* `center`: Căn giữa theo trục phụ.
+* `flex-start` / `flex-end`: Dồn về đỉnh hoặc đáy.
+
+### C. Khoảng cách hiện đại với `gap`
+Thay vì phải viết `margin-right: 16px` cho từng thẻ con rồi loay hoay dùng `:last-child` để xóa lề của thẻ cuối, bạn chỉ cần gõ đúng 1 dòng trên thẻ cha:
+```css
+.container {
+  display: flex;
+  gap: 16px; /* Tự động tạo khoảng cách 16px ở giữa các item */
+}
+```
+
+---
+
+## 4. Điều khiển thẻ con: Sức mạnh của `flex: 1`
+
+Mỗi phần tử con có khả năng tự co giãn thông minh:
+* **`flex-grow` (Độ phình to)**: Mặc định là `0`. Nếu đặt là `1`, nó sẽ tự hút lấy khoảng trống còn thừa để mở rộng ra.
+* **`flex-shrink` (Độ co hẹp)**: Mặc định là `1`. Khi màn hình bị bóp nhỏ, item được phép tự co lại để không làm tràn khung.
+* **`flex-basis`**: Kích thước ban đầu trước khi tính toán co giãn.
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│  ┌──────────────────┐  ┌──────────────────┐  ┌─────────────┐ │
+│  │ flex: 1          │  │ flex: 1          │  │ flex: 1     │ │
+│  │ (Chiếm 1 phần)   │  │ (Chiếm 1 phần)   │  │ (1 phần)    │ │
+│  └──────────────────┘  └──────────────────┘  └─────────────┘ │
+└──────────────────────────────────────────────────────────────┘
+```
+
+> **Tuyệt chiêu `flex: 1`:** Khi bạn muốn 3 chiếc cột chia đều tăm tắp màn hình $33.33\%$, bất chấp nội dung chữ bên trong dài ngắn khác nhau, chỉ cần gắn `flex: 1` cho cả 3 thẻ con. Trình duyệt sẽ tự chia bánh ngọt thành 3 phần bằng nhau tuyệt đối!
+
+---
+
+## 5. Hai bài toán kinh điển trong thực tế
+
+### Bài toán 1: Căn giữa hoàn hảo (The Holy Grail of Centering)
+Để đưa một khối nội dung vào **chính giữa màn hình cả về chiều ngang lẫn chiều dọc**, bạn chỉ cần đúng 3 dòng thần thánh:
+
+```css
+.hero-box {
+  display: flex;
+  justify-content: center; /* Căn giữa trục chính */
+  align-items: center;     /* Căn giữa trục phụ */
+  min-height: 100vh;
+}
+```
+
+### Bài toán 2: Navbar với chiêu thức `margin-left: auto`
+Làm sao để Logo bên trái, Menu ở giữa, còn nút Đăng nhập dạt hẳn sang góc phải cùng?
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ [Logo]   [Trang chủ] [Sản phẩm]             [Nút Đăng nhập] │
+│                                  ▲                           │
+│                                  └─ margin-left: auto hút hết│
+│                                     toàn bộ khoảng trống thừa│
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ```css
 .navbar {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 20px;
 }
 
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 1rem;
-}
-
-/* Kỹ thuật dạt sang phải: margin-left: auto sẽ hấp thụ toàn bộ khoảng trống còn dư */
+/* Chỉ cần thêm 1 dòng này vào nút Đăng nhập: */
 .login-btn {
-  margin-left: auto;
+  margin-left: auto; /* Tự động dạt hết cỡ sang phải */
 }
 ```
 
-### 2. Giải quyết bài toán căn giữa kinh điển
-Để đưa một phần tử vào chính giữa màn hình theo cả 2 chiều, bạn chỉ cần 3 dòng lệnh ngắn gọn:
+---
 
-```css
-.hero-banner {
-  display: flex;
-  justify-content: center; /* Căn giữa theo chiều ngang (Main Axis) */
-  align-items: center;     /* Căn giữa theo chiều dọc (Cross Axis) */
-  min-height: 80vh;
-}
-```
+## 6. Tổng kết
 
-## Ứng dụng thực tế
+* **Flexbox** là công cụ số 1 cho bố cục **1 chiều** (hàng ngang hoặc cột dọc).
+* Nắm chắc **Trục chính** (`justify-content`) và **Trục phụ** (`align-items`).
+* Dùng **`gap`** để tạo khoảng cách sạch sẽ, dùng **`flex: 1`** để chia đều cột, và dùng **`margin-left: auto`** để dạt phần tử sang góc phải.
 
-Flexbox là công cụ số một cho các bố cục 1 chiều:
-- Thanh điều hướng (navbars), thanh công cụ (toolbars).
-- Các cụm nút bấm (button groups).
-- Danh sách thẻ ngang co giãn đều nhau.
-- Căn giữa nội dung trong banner hoặc popup modal.
-
-Trong bài học tiếp theo, chúng ta sẽ tìm hiểu mảnh ghép còn lại hoàn hảo cho bố cục 2 chiều toàn diện: **CSS Grid**.
+---
 
 ## References
 
 - [CSS Flexible Box Layout Module Level 1 • W3C](https://www.w3.org/TR/css-flexbox-1/)
+- [A Complete Guide to Flexbox • CSS-Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
+---
 
 ## Series
 

@@ -20,60 +20,97 @@ language: vi
 
 # Bố cục 2 Chiều Toàn diện với CSS Grid
 
-Khi xây dựng các giao diện ứng dụng web hoàn chỉnh như bảng điều khiển (dashboard) hay trang tin tức, lập trình viên thường phải sắp xếp nhiều khối lớn: thanh điều hướng (header), cột bên (sidebar), nội dung chính (main content) và chân trang (footer). 
+Nếu Flexbox là "ông hoàng" của bố cục 1 chiều (hoặc một hàng ngang, hoặc một cột dọc), thì **CSS Grid Layout** chính là "vị thần tối cao" điều khiển không gian **2 chiều (đồng thời cả Hàng và Cột)**.
 
-Trước khi có CSS Grid, việc giải quyết bài toán layout này bằng Flexbox thường đòi hỏi bạn phải lồng ghép rất nhiều tầng thẻ container (ví dụ: bọc sidebar và main trong một hàng, rồi bọc toàn bộ với header và footer trong một cột). Cách tiếp cận này khiến việc đồng bộ độ rộng và chiều cao giữa các cột qua nhiều hàng trở nên phức tạp, khó kiểm soát và dễ bị xô lệch khi kích thước màn hình thay đổi.
+Trước khi CSS Grid xuất hiện, để dựng một giao diện Dashboard phức tạp (gồm Header, Sidebar bên trái, nội dung ở giữa và Footer bên dưới), lập trình viên phải lồng ghép hàng chục tầng thẻ `<div>` Flexbox vào nhau. CSS Grid ra đời giải quyết triệt để bài toán này: bạn có thể định hình toàn bộ ma trận bố cục của trang web chỉ trong vài dòng CSS ngắn gọn, trực quan và dễ hiểu như vẽ tranh!
 
-**CSS Grid Layout Module** ra đời nhằm giải quyết triệt để thách thức này: cung cấp một hệ thống dàn trang 2 chiều mạnh mẽ, cho phép bạn định hình toàn bộ ma trận hàng và cột của trang web một cách trực quan và mạch lạc.
+---
 
-## Flexbox vs. CSS Grid: Ranh giới giữa 1 chiều và 2 chiều
+## 1. Flexbox vs CSS Grid: Khi nào dùng cái nào?
 
-Mặc dù cả hai đều là những công cụ dàn trang hiện đại, W3C định nghĩa ranh giới ứng dụng rất rõ ràng giữa Flexbox và Grid:
+Rất nhiều người học bị hoang mang: *"Đã có Flexbox rồi thì tại sao phải học Grid? Chúng có triệt tiêu lẫn nhau không?"*.
 
-| Tiêu chí | CSS Flexbox | CSS Grid |
-|---|---|---|
-| **Số chiều (Dimensions)** | **1 chiều** (hoặc theo hàng, hoặc theo cột). | **2 chiều** (đồng thời cả hàng và cột). |
-| **Phương pháp tiếp cận** | **Bottom-up** (từ dưới lên): Kích thước và vị trí được định hình chủ yếu dựa trên kích thước của từng phần tử nội dung con. | **Top-down** (từ trên xuống): Khung lưới ma trận được định hình trước trên thẻ cha, sau đó các phần tử con được xếp vào các ô lưới có sẵn. |
-| **Trường hợp tối ưu** | Thành phần giao diện nhỏ: navbar, menu, cụm nút bấm, căn giữa phần tử. | Khung layout tổng thể của trang web, bảng dữ liệu, lưới ảnh, dashboard. |
+Câu trả lời là: **Không! Chúng là một cặp đôi hoàn hảo bổ trợ cho nhau.**
 
-Nguyên tắc vàng: **Dùng CSS Grid để dựng khung layout tổng thể của trang web, và dùng Flexbox để dàn xếp các chi tiết bên trong từng khối.**
+```text
+┌───────────────────────────────────────┬───────────────────────────────────────┐
+│              CSS FLEXBOX              │               CSS GRID                │
+├───────────────────────────────────────┼───────────────────────────────────────┤
+│ • Bố cục 1 Chiều (1-Dimensional)      │ • Bố cục 2 Chiều (2-Dimensional)      │
+│ • Hoặc hàng ngang, hoặc cột dọc       │ • Quản lý đồng thời cả Hàng & Cột     │
+│ • Phù hợp: Menu, Cụm nút, Danh sách   │ • Phù hợp: Khung layout cả trang web, │
+│   thẻ co giãn, căn giữa nút bấm       │   Lưới ảnh, Bảng dữ liệu, Dashboard   │
+└───────────────────────────────────────┴───────────────────────────────────────┘
+```
 
-## Các khái niệm cấu trúc nền tảng trong CSS Grid
+> **Quy tắc vàng của Senior:** 
+> * **Dùng CSS Grid** để dựng **"bộ khung xương tổng thể"** của trang web (Header, Sidebar, Main, Footer).
+> * **Dùng Flexbox** để dàn xếp **"các chi tiết nội thất nhỏ bên trong từng khối"** (như căn giữa icon trong nút, xếp các link menu).
 
-Để làm chủ CSS Grid, bạn cần nắm vững 5 thuật ngữ cốt lõi:
+---
 
-1. **Grid Container**: Phần tử cha được kích hoạt bằng `display: grid` hoặc `display: inline-grid`.
-2. **Grid Lines (Đường lưới)**: Các đường kẻ ngang và dọc phân chia khung lưới, được đánh số bắt đầu từ 1 ở mép đầu tiên (hoặc số âm bắt đầu từ -1 ở mép cuối).
-3. **Grid Track (Tuyến lưới)**: Khoảng không gian nằm giữa hai đường Grid Lines song song kề nhau. Nói một cách đơn giản, một Grid Track chính là một **hàng (row)** hoặc một **cột (column)**.
-4. **Grid Cell (Ô lưới)**: Giao điểm giữa một hàng và một cột, là đơn vị không gian nhỏ nhất trong lưới.
-5. **Grid Area (Vùng lưới)**: Vùng không gian hình chữ nhật hợp thành từ một hoặc nhiều ô lưới kề nhau.
+## 2. Giải mã thuật ngữ hình học của CSS Grid
 
-## Các thuộc tính cốt lõi và đơn vị phân số `fr`
+Để không bị bối rối khi đọc tài liệu, bạn chỉ cần nắm chắc 4 khái niệm hình học sau:
 
-Để khai báo các hàng và cột trên Grid Container:
+```text
+       Cột 1 (Track)       Cột 2 (Track)
+       Line 1             Line 2             Line 3
+         │                  │                  │
+         ▼                  ▼                  ▼
+Line 1 ──┌──────────────────┬──────────────────┐
+         │                  │                  │
+Hàng 1   │  Grid Cell       │                  │
+(Track)  │  (Một ô đơn lẻ)  │                  │
+         │                  │                  │
+Line 2 ──┼──────────────────┼──────────────────┤
+         │                  │                  │
+Hàng 2   │                  │  Grid Area       │
+(Track)  │                  │  (Vùng nhiều ô)  │
+         │                  │                  │
+Line 3 ──┴──────────────────┴──────────────────┘
+```
 
-- **`grid-template-columns`**: Định nghĩa danh sách các cột.
-- **`grid-template-rows`**: Định nghĩa danh sách các hàng.
-- **`gap`**: Khoảng cách giữa các hàng và cột (thay thế cho `grid-gap`).
+1. **Grid Lines (Đường kẻ lưới)**: Các đường kẻ vô hình chia cột và hàng, được đánh số từ `1` ở mép ngoài cùng sang phải và từ trên xuống dưới.
+2. **Grid Track (Tuyến lưới)**: Khoảng không gian giữa 2 đường kẻ song song kề nhau $\rightarrow$ Chính là một **Hàng (Row)** hoặc một **Cột (Column)**.
+3. **Grid Cell (Ô lưới)**: Giao điểm của 1 hàng và 1 cột (như 1 ô trong bảng Excel).
+4. **Grid Area (Vùng lưới)**: Một diện tích hình chữ nhật gồm nhiều ô lưới gộp lại.
 
-### Sức mạnh của đơn vị `fr` (Fraction Unit)
-Đơn vị `fr` đại diện cho một phần tỷ lệ của không gian còn dư bên trong container sau khi đã trừ đi các cột có kích thước cố định (`px`):
+---
 
+## 3. Các thuộc tính cốt lõi và Đơn vị phân số thần thánh `fr`
+
+Để kích hoạt Grid trên thẻ cha:
 ```css
 .container {
   display: grid;
-  grid-template-columns: 200px 1fr 2fr;
-  /* Cột 1 cố định 200px. Khoảng trống còn lại chia thành 3 phần: cột 2 lấy 1 phần, cột 3 lấy 2 phần */
+  grid-template-columns: 200px 1fr 2fr; /* Định nghĩa 3 cột */
+  grid-template-rows: auto 1fr auto;    /* Định nghĩa 3 hàng */
+  gap: 20px;                            /* Khoảng cách giữa các ô */
 }
 ```
 
-### Hàm tiện ích: `repeat()` và `minmax()`
-- **`repeat(3, 1fr)`**: Tương đương với `1fr 1fr 1fr`, giúp cú pháp gọn gàng hơn khi chia nhiều cột bằng nhau.
-- **`minmax(200px, 1fr)`**: Đảm bảo cột có độ rộng co giãn linh hoạt (`1fr`), nhưng không bao giờ co nhỏ hơn kích thước sàn (`200px`).
+### Đơn vị `fr` (Fraction Unit) là gì?
+`fr` đại diện cho **1 phần tỷ lệ của khoảng trống còn thừa** sau khi đã trừ đi các cột cố định bằng `px`:
 
-## Thực hành 1: Dựng layout trang web kinh điển với `grid-template-areas`
+```text
+               Tổng chiều rộng màn hình: 1100px
+├─────────────────────────────────────────────────────────────────┤
+[ Cột 1: cố định 200px ][ Cột 2 (1fr): 300px ][ Cột 3 (2fr): 600px ]
+                          ▲                    ▲
+                          └─ Còn dư 900px, chia thành 3 phần (1fr + 2fr)
+                             1fr = 300px, 2fr = 600px
+```
 
-Một trong những tính năng trực quan nhất của CSS Grid là khả năng vẽ layout trực tiếp bằng chữ trong CSS thông qua `grid-template-areas`:
+### Hai hàm tiện ích cực mạnh: `repeat()` và `minmax()`
+* **`repeat(3, 1fr)`**: Viết tắt của `1fr 1fr 1fr` (chia đều 3 cột).
+* **`minmax(200px, 1fr)`**: Đặt kích thước co giãn thông minh: bình thường co giãn linh hoạt (`1fr`), nhưng khi màn hình co nhỏ thì không bao giờ được phép nhỏ hơn `200px`.
+
+---
+
+## 4. Tuyệt chiêu 1: Vẽ bố cục trang web bằng chữ với `grid-template-areas`
+
+Đây là tính năng độc nhất vô nhị chỉ có ở CSS Grid: bạn có thể nhìn thấy cả giao diện trang web hiện ra ngay trong đoạn code CSS của mình!
 
 ```html
 <div class="site-layout">
@@ -87,50 +124,69 @@ Một trong những tính năng trực quan nhất của CSS Grid là khả năn
 ```css
 .site-layout {
   display: grid;
+  /* VẼ BỐ CỤC TRỰC QUAN BẰNG CHỮ: */
   grid-template-areas:
-    "head head"
-    "nav  main"
-    "foot foot";
+    "head head"   /* Hàng 1: Header chiếm trọn cả 2 cột */
+    "side main"   /* Hàng 2: Cột trái là Sidebar, cột phải là Main */
+    "foot foot";  /* Hàng 3: Footer chiếm trọn cả 2 cột */
   grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
-  gap: 1rem;
+  gap: 16px;
 }
 
+/* Đặt tên khu vực cho từng thẻ con: */
 .header  { grid-area: head; }
-.sidebar { grid-area: nav;  }
+.sidebar { grid-area: side; }
 .main    { grid-area: main; }
 .footer  { grid-area: foot; }
 ```
 
-Nhìn vào khai báo trên, bạn có thể thấy ngay Header trải dài qua cả 2 cột ở hàng 1, hàng 2 chia thành Sidebar (240px) và Main (1fr), và Footer trải dài qua cả 2 cột ở hàng 3. Cực kỳ trực quan và không cần lồng ghép bất kỳ thẻ trung gian nào!
+Nhìn vào đoạn mã trên, một người chưa biết lập trình cũng có thể hình dung ngay cấu trúc của trang web. Bạn không cần phải lồng ghép bất kỳ chiếc thẻ `<div>` bọc ngoài nào!
 
-## Thực hành 2: Danh sách thẻ tự động Responsive không cần Media Query
+---
 
-Một ứng dụng kinh điển khác là tạo lưới sản phẩm tự thích ứng kích thước màn hình mà không cần viết câu lệnh `@media` nào:
+## 5. Tuyệt chiêu 2: Lưới Card tự động Responsive không cần viết Media Query
+
+Đây là dòng code "thần thánh" được copy nhiều nhất trong thế giới CSS hiện đại để làm danh sách sản phẩm hay thư viện ảnh:
 
 ```css
-.card-grid {
+.product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 20px;
 }
 ```
 
+```text
+Màn hình máy tính to  (1200px):  Tự động chia thành 4 cột đều nhau [A][B][C][D]
+Màn hình máy tính bảng (768px):  Tự động co về thành 2 cột đều nhau [A][B]
+                                                                     [C][D]
+Màn hình điện thoại     (360px):  Tự động co về thành 1 cột duy nhất [A]
+                                                                     [B]
+```
+
 ### Cơ chế hoạt động:
-1. `minmax(280px, 1fr)`: Mỗi thẻ có kích thước tối thiểu là 280px.
-2. `auto-fit`: Trình duyệt tự động tính toán màn hình hiện tại chứa được tối đa bao nhiêu cột có kích thước $\ge 280\text{px}$.
-3. Khi kích thước màn hình co lại (ví dụ trên điện thoại chỉ rộng 360px), trình duyệt sẽ tự động giảm từ 3 cột xuống 2 cột, rồi xuống 1 cột duy nhất, đồng thời kéo giãn thẻ ra `1fr` để phủ kín màn hình.
+* `minmax(280px, 1fr)`: Mỗi chiếc Card sản phẩm rộng tối thiểu `280px`.
+* `auto-fit`: Trình duyệt tự đếm xem bề ngang màn hình hiện tại nhét vừa tối đa bao nhiêu cột. Khi màn hình bị bóp hẹp không còn đủ chỗ cho thẻ mới, thẻ đó tự động rớt xuống hàng dưới và các thẻ còn lại tự kéo giãn (`1fr`) để phủ kín màn hình mà không để lại khoảng trống thừa!
 
-## Ứng dụng thực tế
+---
 
-- Dùng **Grid** để tạo bộ khung bố cục trang web hoàn chỉnh (Header - Sidebar - Content - Footer).
-- Dùng **`grid-template-areas`** khi muốn tái sắp xếp lại layout nhanh chóng giữa màn hình di động và máy tính.
-- Dùng **`repeat(auto-fit, minmax(...))`** cho các danh sách sản phẩm, thư viện ảnh hoặc danh sách tin tức.
+## 6. Tổng kết
+
+* **CSS Grid** là công cụ tối thượng cho bố cục **2 chiều**.
+* Nhớ công thức phân chia không gian với đơn vị **`fr`** và hàm **`repeat()`**.
+* Dùng **`grid-template-areas`** để vẽ bố cục tổng thể trang web bằng chữ.
+* Dùng cụm cú pháp ma thuật **`repeat(auto-fit, minmax(...))`** để làm lưới responsive tự động.
+
+---
 
 ## References
 
 - [CSS Grid Layout Module Level 1 • W3C](https://www.w3.org/TR/css-grid-1/)
+- [A Complete Guide to CSS Grid • CSS-Tricks](https://css-tricks.com/snippets/css/complete-guide-grid/)
+
+---
 
 ## Series
 
