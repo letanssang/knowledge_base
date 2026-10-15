@@ -46,6 +46,29 @@ templates/article.md
 
 ## Front matter
 
+### Practice companions
+
+A focused exercise may live at `articles/<topic>/<article-folder>/practice.md`
+beside its theory article. It is supporting material, not a separately numbered
+article: no YAML front matter or `series_order`. Keep it a draft during authoring;
+it does not publish the parent or change the parent's roadmap status. Add a
+relative link from `index.md` and a return link to `./index.md` in the companion.
+Only use a level-1 heading when the user supplies a title.
+
+List created companions in a separate practice table in the series README,
+with a link to the theory article, a link to `practice.md`, and Draft/Published
+status. Publish a companion only when explicitly requested and verified. Put
+starter or solution files in `assets/practice/` beside those Markdown files when
+needed; keep them separate and link to actual files.
+
+A cumulative project that occupies a series roadmap slot is a normal numbered
+`index.md` article and follows all article metadata and navigation rules. Reuse
+an existing practical project slot before adding another. The writing workflow
+is `.grok/skills/draft-practice/SKILL.md`; its generation prompt is
+`templates/notebooklm-practice-prompt.md`.
+
+### Article metadata
+
 Every article starts with YAML front matter. Copy `templates/article.md`.
 
 ```yaml

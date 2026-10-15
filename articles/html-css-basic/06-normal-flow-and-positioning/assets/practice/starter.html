@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS Positioning & Normal Flow (Starter)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f0f2f5;
+            min-height: 200vh; /* Tạo chiều dài để kiểm tra cuộn trang */
+        }
+
+        /* 1. Thanh điều hướng cần ghim (Sticky Navigation) */
+        .sticky-nav {
+            background: #001529;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            /* CỐ Ý ĐỂ STATIC: Cần chuyển sang position: sticky */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 2. Thẻ sự kiện: CỐ Ý THIẾU position: relative */
+        .event-card {
+            background: #ffffff;
+            border: 1px solid #d9d9d9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 50px;
+            /* CẦN THÊM: position: relative để làm Containing Block */
+        }
+
+        /* Huy hiệu trạng thái bị bay ra góc màn hình */
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #f5222d;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* 3. Thí nghiệm Normal Flow: Relative vs Absolute */
+        .flow-box {
+            display: inline-block;
+            width: 120px;
+            height: 80px;
+            margin-right: 15px;
+            color: white;
+            text-align: center;
+            line-height: 80px;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+
+        .box-1 { background: #1890ff; }
+        .box-2 { background: #52c41a; }
+        .box-3 { background: #722ed1; }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-nav">
+        <strong>⚡ Menu Sự Kiện</strong> (Cần ghim cố định khi cuộn trang)
+    </div>
+
+    <div class="container">
+        <h1>Thực hành CSS Positioning</h1>
+        <p>Quan sát hiện tượng huy hiệu màu đỏ "HOT" bị bay ra tít góc trên bên phải của cửa sổ trình duyệt thay vì nằm ở góc thẻ sự kiện.</p>
+
+        <!-- THẺ SỰ KIỆN CHỨA HUY HIỆU -->
+        <div class="event-card">
+            <span class="badge">HOT 🔥</span>
+            <h2>Vé Early Bird - Hội thảo Frontend 2026</h2>
+            <p>Khám phá công nghệ web mới nhất với các diễn giả hàng đầu. Đăng ký trước 30/10 để nhận ưu đãi 30%.</p>
+        </div>
+
+        <h2 style="margin-top: 50px;">Thí nghiệm: Relative vs Absolute trong Normal Flow</h2>
+        <div class="flow-box box-1">Khối 1</div>
+        <div class="flow-box box-2">Khối 2</div>
+        <div class="flow-box box-3">Khối 3</div>
+    </div>
+
+</body>
+</html>

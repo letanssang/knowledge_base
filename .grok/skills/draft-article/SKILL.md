@@ -10,6 +10,10 @@ description: >
 
 # Draft an article
 
+For practical exercises, labs, or a project article, use the sibling
+`../draft-practice/SKILL.md` instead. It preserves the source verification rules
+while generating an activity rather than a theory explanation.
+
 Read and follow the "Draft an article" section in `AGENTS.md` at the repository root. That section is the procedure for every agent. Do not use a different workflow.
 
 After `notebooklm ask` returns, complete the "Verify" step in that section before creating or editing the article. The answer is not saved as-is.

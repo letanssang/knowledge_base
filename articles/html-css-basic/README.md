@@ -20,3 +20,20 @@ Mục tiêu của series không phải là học vẹt cú pháp thẻ hay thu�
 | 08 | [Bố cục 2 Chiều Toàn diện với CSS Grid](./08-modern-layout-with-css-grid/index.md) | Draft |
 | 09 | [Responsive Web Design và Tư duy Mobile-First](./09-responsive-and-mobile-first/index.md) | Draft |
 | 10 | [Thực hành Tổng hợp: Dựng Landing Page hoàn chỉnh từ con số 0](./10-hands-on-landing-page/index.md) | Draft |
+
+## Practice companions
+
+| Theory Article | Practice companion | Status |
+| --- | --- | --- |
+| 01. [Web hoạt động thế nào và Trang HTML đầu tiên](./01-web-fundamentals-and-first-html-page/index.md) | [Thực nghiệm DOM và NodeList](./01-web-fundamentals-and-first-html-page/practice.md) | Draft |
+| 02. [Semantic HTML: Đừng chỉ dùng thẻ `<div>`](./02-semantic-html-and-structure/index.md) | [Tái cấu trúc Semantic HTML](./02-semantic-html-and-structure/practice.md) | Draft |
+| 03. [Thu thập Dữ liệu Người dùng với HTML Forms](./03-html-forms-and-validation/index.md) | [Xây dựng và gỡ lỗi HTML Forms](./03-html-forms-and-validation/practice.md) | Draft |
+| 04. [CSS Syntax, Specificity và Bản chất của Box Model](./04-css-syntax-and-box-model/index.md) | [Chẩn đoán Box Model & Specificity](./04-css-syntax-and-box-model/practice.md) | Draft |
+| 05. [Đơn vị đo, Typography và Màu sắc trong CSS](./05-units-typography-and-colors/index.md) | [Chuẩn hóa Typographic Scale & HSL](./05-units-typography-and-colors/practice.md) | Draft |
+| 06. [Normal Flow và Điều khiển Vị trí với CSS Positioning](./06-normal-flow-and-positioning/index.md) | [Kiểm soát Containing Block & Stacking](./06-normal-flow-and-positioning/practice.md) | Draft |
+
+
+
+
+
+

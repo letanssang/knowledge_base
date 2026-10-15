@@ -218,4 +218,6 @@ Vì `appendChild()` tự động thực hiện thao tác `adopt`, nó sẽ **b�
 
 ## Series
 
-Next: [Semantic HTML: Đừng chỉ dùng thẻ `<div>`](../02-semantic-html-and-structure/index.md)
+- [Thực hành](./practice.md)
+- Next: [Semantic HTML: Đừng chỉ dùng thẻ `<div>`](../02-semantic-html-and-structure/index.md)
+

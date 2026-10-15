@@ -173,5 +173,7 @@ Làm sao để Logo bên trái, Menu ở giữa, còn nút Đăng nhập dạt h
 
 ## Series
 
-Previous: [Normal Flow và Điều khiển Vị trí với CSS Positioning](../06-normal-flow-and-positioning/index.md)
-Next: [Bố cục 2 Chiều Toàn diện với CSS Grid](../08-modern-layout-with-css-grid/index.md)
+- Previous: [Normal Flow và Điều khiển Vị trí với CSS Positioning](../06-normal-flow-and-positioning/index.md)
+- [Thực hành](./practice.md)
+- Next: [Bố cục 2 Chiều Toàn diện với CSS Grid](../08-modern-layout-with-css-grid/index.md)
+

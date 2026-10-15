@@ -4,6 +4,14 @@ Personal Markdown knowledge base. Article rules are in `CONTRIBUTING.md`. The ge
 
 This file is the shared procedure for every coding agent, including Claude Code, Codex, Antigravity, Cursor, and Grok.
 
+## Draft practice
+
+For hands-on companions, exercises, labs, or practical project articles, read
+`.grok/skills/draft-practice/SKILL.md`. It applies the NotebookLM and Verify
+procedure below with `templates/notebooklm-practice-prompt.md`, and uses the
+Practice companions convention in `CONTRIBUTING.md` for companion files.
+Assess whether practice suits the topic; do not require a lab for every series.
+
 ## Draft an article
 
 Each series is one NotebookLM notebook. Run the commands below. Do not restate the article format.

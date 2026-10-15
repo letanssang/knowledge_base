@@ -195,5 +195,7 @@ Trong CSS, hiện tượng này gọi là **Stacking Context (Ngữ cảnh xếp
 
 ## Series
 
-Previous: [Đơn vị đo, Typography và Màu sắc trong CSS](../05-units-typography-and-colors/index.md)
-Next: [Bố cục 1 Chiều Hiện đại với CSS Flexbox](../07-modern-layout-with-flexbox/index.md)
+- Previous: [Đơn vị đo, Typography và Màu sắc trong CSS](../05-units-typography-and-colors/index.md)
+- [Thực hành](./practice.md)
+- Next: [Bố cục 1 Chiều Hiện đại với CSS Flexbox](../07-modern-layout-with-flexbox/index.md)
+

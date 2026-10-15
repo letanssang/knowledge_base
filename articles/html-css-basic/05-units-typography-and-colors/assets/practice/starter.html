@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS Units, Typography & Colors (Starter)</title>
+    <style>
+        /* 1. Font chữ đặt tĩnh bằng PX */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 24px;
+            margin: 20px;
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 25px;
+        }
+
+        /* 2. Thí nghiệm hiện tượng Compounding của EM trên danh sách lồng nhau */
+        .nested-list {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            padding: 20px 40px;
+            border-radius: 6px;
+        }
+
+        .nested-list li {
+            /* CỐ Ý DÙNG EM CHO FONT-SIZE TRÊN PHẦN TỬ LỒNG NHAU */
+            font-size: 1.25em;
+            margin: 8px 0;
+        }
+
+        /* 3. Nút bấm dùng mã màu HEX cố định, padding bằng PX */
+        .btn-register {
+            background-color: #1890ff;
+            color: #ffffff;
+            border: 1px solid #096dd9;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-register:hover {
+            /* Rất khó nhẩm mã màu tối hơn từ HEX #1890ff */
+            background-color: #096dd9;
+        }
+
+        .card-event {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hội thảo Web Frontend 2026</h1>
+    <p>Trang thông báo sự kiện sử dụng đơn vị tĩnh px và màu HEX ban đầu.</p>
+
+    <h2>1. Thí nghiệm: Hiện tượng phình to cỡ chữ (Compounding EM)</h2>
+    <p>Danh sách 3 cấp bên dưới áp dụng <code>font-size: 1.25em</code> cho mỗi thẻ <code>&lt;li&gt;</code>. Hãy quan sát cỡ chữ tăng dần theo cấp số nhân:</p>
+
+    <ul class="nested-list">
+        <li>Cấp 1: Chủ đề Frontend
+            <ul>
+                <li>Cấp 2: Kiến trúc Web hiện đại
+                    <ul>
+                        <li>Cấp 3: Tối ưu hiệu năng rendering</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>2. Thí nghiệm: Nút bấm và Thẻ sự kiện</h2>
+    <div class="card-event">
+        <h3>Đăng ký giữ chỗ sớm</h3>
+        <p>Tham gia để nhận vé mời VIP cùng tài liệu chuyên sâu từ các chuyên gia.</p>
+        <button class="btn-register">Đăng ký tham dự</button>
+    </div>
+
+</body>
+</html>

@@ -178,5 +178,7 @@ Khi làm nút bấm, bạn chỉ cần giữ nguyên góc màu **Hue (215)** và
 
 ## Series
 
-Previous: [CSS Syntax, Specificity và Bản chất của Box Model](../04-css-syntax-and-box-model/index.md)
-Next: [Normal Flow và Điều khiển Vị trí với CSS Positioning](../06-normal-flow-and-positioning/index.md)
+- Previous: [CSS Syntax, Specificity và Bản chất của Box Model](../04-css-syntax-and-box-model/index.md)
+- [Thực hành](./practice.md)
+- Next: [Normal Flow và Điều khiển Vị trí với CSS Positioning](../06-normal-flow-and-positioning/index.md)
+

@@ -177,5 +177,7 @@ Thứ tự các cấp độ tiêu đề phản ánh cây phác thảo phân cấ
 
 ## Series
 
-Previous: [Web hoạt động thế nào và Trang HTML đầu tiên](../01-web-fundamentals-and-first-html-page/index.md)
-Next: [Thu thập Dữ liệu Người dùng với HTML Forms](../03-html-forms-and-validation/index.md)
+- Previous: [Web hoạt động thế nào và Trang HTML đầu tiên](../01-web-fundamentals-and-first-html-page/index.md)
+- [Thực hành](./practice.md)
+- Next: [Thu thập Dữ liệu Người dùng với HTML Forms](../03-html-forms-and-validation/index.md)
+

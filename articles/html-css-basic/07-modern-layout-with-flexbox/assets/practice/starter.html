@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS Flexbox (Starter)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* 1. THANH ĐIỀU HƯỚNG BAN ĐẦU: Chưa kích hoạt Flexbox */
+        .navbar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            /* CẦN THÊM: display: flex, justify-content: space-between, align-items: center */
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            list-style: none;
+            /* CẦN THÊM: display: flex, gap: 15px, flex-wrap: wrap */
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        .nav-links li a:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .btn-cta {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 2. THANH CÔNG CỤ SỰ KIỆN: Thử nghiệm flex-grow */
+        .toolbar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            /* CẦN THÊM: display: flex, gap: 10px, align-items: center */
+        }
+
+        .search-input {
+            padding: 8px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            /* CẦN THÊM: flex: 1 để tự động chiếm trọn không gian trống */
+        }
+
+        .filter-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* Khung co hẹp mô phỏng màn hình nhỏ */
+        .preview-container {
+            max-width: 450px;
+            border: 2px dashed #94a3b8;
+            padding: 15px;
+            border-radius: 8px;
+            background: #ffffff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thực hành CSS Flexbox</h1>
+    <p style="margin-bottom: 20px;">Dưới đây là giao diện thanh điều hướng và thanh tìm kiếm cần hoàn thiện bằng Flexbox.</p>
+
+    <!-- THANH ĐIỀU HƯỚNG CHÍNH -->
+    <header class="navbar">
+        <div class="logo">Frontend2026 🌐</div>
+        <ul class="nav-links">
+            <li><a href="#">Trang chủ</a></li>
+            <li><a href="#">Lịch trình hội thảo</a></li>
+            <li><a href="#">Diễn giả tiêu biểu</a></li>
+            <li><a href="#">Tài liệu hội thảo</a></li>
+        </ul>
+        <button class="btn-cta">Mua vé ngay</button>
+    </header>
+
+    <!-- THANH TÌM KIẾM & BỘ LỌC -->
+    <h2>Thanh công cụ (Thử nghiệm flex-grow & flex-shrink)</h2>
+    <div class="toolbar">
+        <input type="text" class="search-input" placeholder="Tìm kiếm phiên thuyết trình hoặc diễn giả...">
+        <button class="filter-btn">Bộ lọc</button>
+        <button class="filter-btn">Hôm nay</button>
+        <button class="filter-btn">Phổ biến nhất</button>
+    </div>
+
+    <!-- KHUNG THỬ NGHIỆM MÀN HÌNH NHỎ (450PX) -->
+    <h2>Thử nghiệm chống tràn trên khung hẹp (450px)</h2>
+    <div class="preview-container">
+        <div class="toolbar" style="margin: 0;">
+            <input type="text" class="search-input" placeholder="Tìm nhanh...">
+            <button class="filter-btn">Tất cả</button>
+            <button class="filter-btn">VIP</button>
+        </div>
+    </div>
+
+</body>
+</html>

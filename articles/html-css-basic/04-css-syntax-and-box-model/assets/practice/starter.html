@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS Box Model & Specificity (Starter)</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; background: #f5f5f5; }
+
+        /* Khung chứa cố định 600px */
+        .container {
+            width: 600px;
+            background: #ffffff;
+            border: 2px dashed #999;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        /* Thí nghiệm 1: Hai thẻ card cần nằm cạnh nhau nhưng bị rớt hàng do Box Model */
+        .card {
+            width: 300px;
+            padding: 20px;
+            border: 2px solid #1890ff;
+            background: #e6f7ff;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        /* Thí nghiệm 2: Xung đột độ ưu tiên CSS (Specificity) */
+        .card-title {
+            color: #52c41a; /* Mong muốn màu xanh lá */
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+
+        #event-section .title {
+            color: #f5222d; /* Bị đè thành màu đỏ do ID selector có Specificity cao hơn */
+        }
+
+        /* Thí nghiệm 3: Margin Collapsing giữa 2 khối liền kề */
+        .box-a {
+            background: #ffd591;
+            padding: 10px;
+            margin-bottom: 25px;
+        }
+
+        .box-b {
+            background: #b7eb8f;
+            padding: 10px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thực hành CSS Box Model & Specificity</h1>
+
+    <h2>1. Thí nghiệm Box Model: Tại sao Card bị rớt hàng?</h2>
+    <p>Khung chứa có chiều rộng chính xác <strong>600px</strong>. Mỗi thẻ con có <code>width: 300px</code>. Tại sao thẻ thứ hai không thể đứng cùng hàng?</p>
+
+    <div class="container" id="event-section">
+        <div class="card">
+            <h3 class="title card-title">Thẻ sự kiện A</h3>
+            <p>Nội dung mô tả thẻ A.</p>
+        </div>
+        <div class="card">
+            <h3 class="title card-title">Thẻ sự kiện B</h3>
+            <p>Nội dung mô tả thẻ B.</p>
+        </div>
+    </div>
+
+    <h2>2. Thí nghiệm Margin Collapsing</h2>
+    <p>Khối Cam có <code>margin-bottom: 25px</code>, Khối Xanh có <code>margin-top: 25px</code>. Hãy dùng DevTools đo khoảng cách thực tế giữa hai khối.</p>
+
+    <div class="box-a">Khối Cam (margin-bottom: 25px)</div>
+    <div class="box-b">Khối Xanh (margin-top: 25px)</div>
+
+</body>
+</html>

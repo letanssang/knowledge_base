@@ -180,5 +180,7 @@ $$\text{Khoảng cách thực tế} = \max(\text{margin-bottom}_1, \text{margin-
 
 ## Series
 
-Previous: [Thu thập Dữ liệu Người dùng với HTML Forms](../03-html-forms-and-validation/index.md)
-Next: [Đơn vị đo, Typography và Màu sắc trong CSS](../05-units-typography-and-colors/index.md)
+- Previous: [Thu thập Dữ liệu Người dùng với HTML Forms](../03-html-forms-and-validation/index.md)
+- [Thực hành](./practice.md)
+- Next: [Đơn vị đo, Typography và Màu sắc trong CSS](../05-units-typography-and-colors/index.md)
+

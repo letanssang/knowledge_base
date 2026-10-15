@@ -196,5 +196,7 @@ Khi người dùng bấm nút gửi, nếu dữ liệu không thỏa mãn, trìn
 
 ## Series
 
-Previous: [Semantic HTML: Đừng chỉ dùng thẻ `<div>`](../02-semantic-html-and-structure/index.md)
-Next: [CSS Syntax, Specificity và Bản chất của Box Model](../04-css-syntax-and-box-model/index.md)
+- Previous: [Semantic HTML: Đừng chỉ dùng thẻ `<div>`](../02-semantic-html-and-structure/index.md)
+- [Thực hành](./practice.md)
+- Next: [CSS Syntax, Specificity và Bản chất của Box Model](../04-css-syntax-and-box-model/index.md)
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Viết bài thực hành"
+  short_description: "Viết bài thực hành gắn với lý thuyết trong series"
+  default_prompt: "Dùng $draft-practice để viết bài thực hành cho article được chỉ định trong series HTML & CSS Basic."
