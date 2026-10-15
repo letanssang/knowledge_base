@@ -166,3 +166,5 @@ Các mốc tiêu chuẩn được phần lớn các thư viện lớn (Tailwind,
 
 Previous: [Bố cục 2 Chiều Toàn diện với CSS Grid](../08-modern-layout-with-css-grid/index.md)
 Next: [Thực hành Tổng hợp: Dựng Landing Page hoàn chỉnh từ con số 0](../10-hands-on-landing-page/index.md)
+Thực hành: [Thực hành](./practice.md)
+

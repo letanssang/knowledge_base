@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS Grid Layout (Starter)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        p.desc {
+            margin-bottom: 25px;
+            color: #64748b;
+        }
+
+        /* 1. LƯỚI SỰ KIỆN: Ban đầu chưa kích hoạt CSS Grid */
+        .event-grid {
+            /* CẦN THÊM: display: grid, grid-template-columns, gap */
+        }
+
+        /* Thẻ sự kiện */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px; /* Sẽ thay thế bằng gap khi dùng Grid */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .speaker {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        /* Thẻ đặc biệt (Featured Keynote) */
+        .card-featured {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            /* CẦN THÊM: grid-column: span 2 */
+        }
+
+        .card-featured .tag {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Lịch trình Các Phiên Hội thảo 2026</h1>
+        <p class="desc">Ban đầu các thẻ sự kiện đang xếp chồng từ trên xuống dưới theo dòng chảy thông thường (Normal Flow). Hãy sử dụng CSS Grid để dựng lưới 2 chiều chuyên nghiệp.</p>
+
+        <div class="event-grid">
+            <!-- Thẻ 1: Keynote (Nổi bật - Cần chiếm 2 cột) -->
+            <div class="card card-featured">
+                <span class="tag">KEYNOTE</span>
+                <h3>Tương Lai Kiến Trúc Web & Rendering Engine 2026</h3>
+                <div class="speaker">Diễn giả: GS. Nguyễn Văn A - Trưởng nhóm Kiến trúc Trình duyệt</div>
+                <p>Khám phá cách các Browser Engine hiện đại tối ưu hóa luồng dựng hình (Rendering Pipeline), DOM Tree và CSSOM để đạt 120 FPS trên mọi thiết bị.</p>
+            </div>
+
+            <!-- Thẻ 2 -->
+            <div class="card">
+                <span class="tag">HTML & DOM</span>
+                <h3>Bản Chất Document Object Model</h3>
+                <div class="speaker">Diễn giả: Trần Thị B</div>
+                <p>Giải mã cây đối tượng trong RAM, tránh cạm bẫy Live Collection và rò rỉ bộ nhớ.</p>
+            </div>
+
+            <!-- Thẻ 3 -->
+            <div class="card">
+                <span class="tag">CSS DEEP DIVE</span>
+                <h3>Box Model & Stacking Context</h3>
+                <div class="speaker">Diễn giả: Lê Văn C</div>
+                <p>Kiểm soát độ cao trục Z, làm chủ Containing Block và triệt tiêu lỗi gộp lề (Margin Collapsing).</p>
+            </div>
+
+            <!-- Thẻ 4 -->
+            <div class="card">
+                <span class="tag">ACCESSIBILITY</span>
+                <h3>Thiết Kế Trợ Năng Chuẩn WCAG</h3>
+                <div class="speaker">Diễn giả: Phạm Thị D</div>
+                <p>Xây dựng web hỗ trợ hoàn hảo cho trình đọc màn hình bằng Semantic HTML và ARIA.</p>
+            </div>
+
+            <!-- Thẻ 5 -->
+            <div class="card">
+                <span class="tag">PERFORMANCE</span>
+                <h3>Tối Ưu Tốc Độ Tải Trang & Core Web Vitals</h3>
+                <div class="speaker">Diễn giả: Hoàng Văn E</div>
+                <p>Kỹ thuật nạp CSS bất đồng bộ, font subsets và giảm thiểu Layout Shifts (CLS).</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -31,9 +31,8 @@ Mục tiêu của series không phải là học vẹt cú pháp thẻ hay thu�
 | 04. [CSS Syntax, Specificity và Bản chất của Box Model](./04-css-syntax-and-box-model/index.md) | [Chẩn đoán Box Model & Specificity](./04-css-syntax-and-box-model/practice.md) | Draft |
 | 05. [Đơn vị đo, Typography và Màu sắc trong CSS](./05-units-typography-and-colors/index.md) | [Chuẩn hóa Typographic Scale & HSL](./05-units-typography-and-colors/practice.md) | Draft |
 | 06. [Normal Flow và Điều khiển Vị trí với CSS Positioning](./06-normal-flow-and-positioning/index.md) | [Kiểm soát Containing Block & Stacking](./06-normal-flow-and-positioning/practice.md) | Draft |
-
-
-
-
-
+| 07. [Bố cục 1 Chiều Hiện đại với CSS Flexbox](./07-modern-layout-with-flexbox/index.md) | [Bố cục 1 Chiều với Flexbox](./07-modern-layout-with-flexbox/practice.md) | Draft |
+| 08. [Bố cục 2 Chiều với CSS Grid](./08-modern-layout-with-css-grid/index.md) | [Bố cục 2 Chiều với CSS Grid](./08-modern-layout-with-css-grid/practice.md) | Draft |
+| 09. [Responsive Web Design và Tư duy Mobile-First](./09-responsive-and-mobile-first/index.md) | [Bố cục Thích ứng & Mobile-First](./09-responsive-and-mobile-first/practice.md) | Draft |
+| 10. [Thực hành Tổng hợp: Dựng Landing Page hoàn chỉnh từ con số 0](./10-hands-on-landing-page/index.md) | *(Dự án thực hành độc lập - đã tích hợp trong bài)* | Draft |
 

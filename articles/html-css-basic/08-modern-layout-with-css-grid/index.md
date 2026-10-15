@@ -192,3 +192,5 @@ Màn hình điện thoại     (360px):  Tự động co về thành 1 cột duy
 
 Previous: [Bố cục 1 Chiều Hiện đại với CSS Flexbox](../07-modern-layout-with-flexbox/index.md)
 Next: [Responsive Web Design và Tư duy Mobile-First](../09-responsive-and-mobile-first/index.md)
+Thực hành: [Thực hành](./practice.md)
+
